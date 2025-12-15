@@ -1,0 +1,14 @@
+<h2>Tambah Analisis Harga</h2>
+<%= form_with model: [@properti, @analisis], local: true do |f| %>
+  <div class="form-group">
+    <%= f.label :metode %>
+    <%= f.text_field :metode, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :harga_rekomendasi %>
+    <%= f.number_field :harga_rekomendasi, step: :any, class: 'form-control' %>
+  </div>
+
+  <%= f.submit 'Simpan', class: 'btn btn-primary' %>
+<% end %>

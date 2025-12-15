@@ -1,0 +1,218 @@
+/* ------------------------------------------------------
+   GLOBAL SHOPIFY PREMIUM
+------------------------------------------------------- */
+:root {
+  --primary: #5c6ac4;
+  --primary-hover: #4b57a8;
+  --bg: #f7f8fa;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --border: #e5e7eb;
+  --radius: 14px;
+  --transition: 0.25s ease;
+}
+
+/* DARK MODE */
+.dark-mode {
+  --bg: #0d0f13;
+  --card-bg: #1b1e25;
+  --text: #e5e7eb;
+  --border: #2a2d36;
+  --primary: #7b88ff;
+}
+
+/* RESET */
+body {
+  background: var(--bg);
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ------------------------------------------------------
+   NAVBAR SHOPIFY POLARIS
+------------------------------------------------------- */
+.navbar {
+  width: 100%;
+  height: 62px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+  gap: 20px;
+}
+
+.navbar .brand {
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--primary);
+}
+
+/* ------------------------------------------------------
+   SIDEBAR PREMIUM
+------------------------------------------------------- */
+.sidebar {
+  width: 240px;
+  height: 100vh;
+  background: var(--card-bg);
+  border-right: 1px solid var(--border);
+  padding-top: 75px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar a {
+  display: block;
+  padding: 14px 22px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 500;
+  border-left: 3px solid transparent;
+  transition: var(--transition);
+}
+
+.sidebar a:hover {
+  background: rgba(92, 106, 196, 0.08);
+  border-left-color: var(--primary);
+}
+
+/* ------------------------------------------------------
+   MAIN CONTENT
+------------------------------------------------------- */
+.main-content {
+  margin-left: 240px;
+  padding: 100px 40px;
+}
+
+/* ------------------------------------------------------
+   BUTTONS SHOPIFY
+------------------------------------------------------- */
+.btn-primary {
+  background: var(--primary);
+  border: none;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  color: #fff !important;
+  font-weight: 600;
+  transition: var(--transition);
+  box-shadow: 0 4px 14px rgba(92, 106, 196, 0.25);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+}
+
+/* Danger */
+.btn-danger {
+  background: #e53935;
+  border: none;
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  color: #fff !important;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+/* ------------------------------------------------------
+   CARD PROPERTY AIRBNB × SHOPIFY
+------------------------------------------------------- */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 22px;
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.card-sub {
+  color: #6b7280;
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* ------------------------------------------------------
+   FORMS SHOPIFY POLARIS STYLE
+------------------------------------------------------- */
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-top: 5px;
+  transition: var(--transition);
+  background: var(--card-bg);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(92, 106, 196, 0.2);
+}
+
+/* ------------------------------------------------------
+   TABLE PREMIUM SHOPIFY
+------------------------------------------------------- */
+.table {
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.table th {
+  background: #f3f4f6;
+  padding: 14px;
+  font-size: 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.table td {
+  padding: 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ------------------------------------------------------
+   ANIMASI HALUS
+------------------------------------------------------- */
+.fade-in {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ------------------------------------------------------
+   DARK MODE TOGGLE
+------------------------------------------------------- */
+.dark-toggle {
+  cursor: pointer;
+  position: fixed;
+  right: 24px;
+  top: 14px;
+  background: #1a1a1a;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+}

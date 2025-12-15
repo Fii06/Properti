@@ -1,0 +1,67 @@
+<%= form_with model: @properti, local: true do |f| %>
+  <div class="form-group">
+    <%= f.label :alamat %>
+    <%= f.text_field :alamat, class: 'form-control' %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <%= f.label :latitude %>
+      <%= f.number_field :latitude, step: :any, class: 'form-control' %>
+    </div>
+    <div class="form-group col-md-6">
+      <%= f.label :longitude %>
+      <%= f.number_field :longitude, step: :any, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <%= f.label :luas_tanah %>
+      <%= f.number_field :luas_tanah, class: 'form-control' %>
+    </div>
+    <div class="form-group col-md-4">
+      <%= f.label :luas_bangunan %>
+      <%= f.number_field :luas_bangunan, class: 'form-control' %>
+    </div>
+    <div class="form-group col-md-4">
+      <%= f.label :tahun_pembangunan %>
+      <%= f.number_field :tahun_pembangunan, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :status_kepemilikan %>
+    <%= f.text_field :status_kepemilikan, class: 'form-control' %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <%= f.label :njop %>
+      <%= f.number_field :njop, step: :any, class: 'form-control' %>
+    </div>
+    <div class="form-group col-md-6">
+      <%= f.label :harga_pasar %>
+      <%= f.number_field :harga_pasar, step: :any, class: 'form-control' %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :image_url, 'URL Foto (opsional)' %>
+    <%= f.text_field :image_url, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :deskripsi %>
+    <%= f.text_area :deskripsi, rows: 4, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label 'Fasilitas (pilih beberapa)' %>
+    <%= f.collection_check_boxes :fasilitas_ids, Fasilitas.all, :id, :nama do |cb| %>
+      <div class="form-check"><%= cb.check_box(class: 'form-check-input') %> <%= cb.text %></div>
+    <% end %>
+  </div>
+
+  <%= f.submit class: 'btn btn-primary' %>
+<% end %>

@@ -1,0 +1,41 @@
+[
+  {
+    "alamat": "Jl. Merdeka No. 123, Bandung",
+    "latitude": -6.914744,
+    "longitude": 107.609810,
+    "luas_tanah": 120,
+    "luas_bangunan": 90,
+    "tahun_pembangunan": 2015,
+    "status_kepemilikan": "SHM",
+    "njop": 500000000,
+    "harga_pasar": 750000000,
+    "created_at": { "$date": "2025-01-01T00:00:00Z" },
+    "updated_at": { "$date": "2025-01-01T00:00:00Z" }
+  },
+  {
+    "alamat": "Jl. Asia Afrika No. 45, Bandung",
+    "latitude": -6.921480,
+    "longitude": 107.611178,
+    "luas_tanah": 200,
+    "luas_bangunan": 150,
+    "tahun_pembangunan": 2010,
+    "status_kepemilikan": "HGB",
+    "njop": 900000000,
+    "harga_pasar": 1200000000,
+    "created_at": { "$date": "2025-01-02T00:00:00Z" },
+    "updated_at": { "$date": "2025-01-02T00:00:00Z" }
+  },
+  {
+    "alamat": "Jl. Setiabudi No. 77, Bandung",
+    "latitude": -6.858178,
+    "longitude": 107.593661,
+    "luas_tanah": 300,
+    "luas_bangunan": 250,
+    "tahun_pembangunan": 2018,
+    "status_kepemilikan": "SHM",
+    "njop": 1500000000,
+    "harga_pasar": 2000000000,
+    "created_at": { "$date": "2025-01-03T00:00:00Z" },
+    "updated_at": { "$date": "2025-01-03T00:00:00Z" }
+  }
+]

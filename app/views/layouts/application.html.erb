@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PropertiKU</title>
+
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <!-- CSS Themewagon -->
+  <%= stylesheet_link_tag "application", media: "all" %>
+
+
+  <!-- JS -->
+  <%= javascript_include_tag "application" %>
+
+</head>
+
+<body>
+
+  <%= render "layouts/navbar" %>
+
+  <main role="main">
+    <%= yield %>
+  </main>
+
+  <%= render "layouts/footer" %>
+
+</body>
+</html>

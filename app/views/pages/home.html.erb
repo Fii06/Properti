@@ -1,0 +1,26 @@
+<div class="hero">
+  <div class="hero-inner">
+    <h1>Temukan Properti Impianmu</h1>
+    <p>Cari dan bandingkan properti secara mudah</p>
+
+    <%= form_with url: propertis_path, method: :get, local: true, class: 'hero-search' do %>
+      <input name="q" placeholder="Cari alamat / kecamatan / harga" />
+      <button type="submit">Cari</button>
+    <% end %>
+  </div>
+</div>
+
+<section class="featured container">
+  <h2>Featured Properti</h2>
+  <div class="grid">
+    <% @featured.each do |p| %>
+      <div class="card">
+        <div class="card-body">
+          <h3><%= p.alamat %></h3>
+          <p>Rp <%= number_with_delimiter(p.harga_pasar || 0) %></p>
+          <%= link_to 'Detail', properti_path(p), class: 'btn' %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</section>

@@ -1,0 +1,14 @@
+<h2>Daftar Fasilitas</h2>
+<%= link_to 'Tambah Fasilitas', new_fasilitas_path, class: 'btn btn-primary' %>
+
+<ul>
+  <% @fasilitas.each do |f| %>
+    <li>
+      <%= f.nama %>
+      <% if user_signed_in? %>
+        <%= link_to 'Edit', edit_fasilitas_path(f) %> |
+        <%= link_to 'Hapus', fasilitas_path(f), method: :delete, data: { confirm: 'Yakin?' } %>
+      <% end %>
+    </li>
+  <% end %>
+</ul>

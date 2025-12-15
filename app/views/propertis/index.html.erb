@@ -1,0 +1,21 @@
+<h1 class="page-title">Daftar Properti</h1>
+
+<div class="property-grid container">
+  <% @propertis.each do |p| %>
+    <div class="property-card">
+      <div class="card-body">
+        <h3><%= p.alamat %></h3>
+        <div class="muted">Luas: <%= p.luas_tanah %> m²</div>
+        <div class="price">Rp <%= number_with_delimiter(p.harga_pasar || 0) %></div>
+        <div class="actions">
+          <%= link_to 'Detail', properti_path(p), class: 'btn' %>
+          <% if user_signed_in? %>
+            <%= link_to 'Edit', edit_properti_path(p), class: 'btn btn-secondary' %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= paginate @propertis %>

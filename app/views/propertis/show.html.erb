@@ -1,0 +1,70 @@
+<div class="container detail">
+  <div class="left">
+
+  </div>
+
+  <div class="right">
+    <h1><%= @properti.alamat %></h1>
+    <p class="price">Rp <%= number_with_delimiter(@properti.harga_pasar || 0) %></p>
+
+    <ul class="specs">
+      <li>Luas Tanah: <%= @properti.luas_tanah %> m²</li>
+      <li>Luas Bangunan: <%= @properti.luas_bangunan %> m²</li>
+      <li>Tahun: <%= @properti.tahun_pembangunan %></li>
+      <li>Status: <%= @properti.status_kepemilikan %></li>
+    </ul>
+
+    <h3>Fasilitas</h3>
+    <ul>
+      <% @properti.fasilitas.each do |f| %>
+        <li><%= f.nama %></li>
+      <% end %>
+    </ul>
+
+    <h3>Riwayat Harga</h3>
+    <table class="table">
+      <thead><tr><th>Tanggal</th><th>Harga</th><th></th></tr></thead>
+      <tbody>
+        <% @riwayat_hargas.each do |r| %>
+          <tr>
+            <td><%= r.tanggal %></td>
+            <td>Rp <%= number_with_delimiter(r.harga || 0) %></td>
+            <% if user_signed_in? %>
+              <td><%= link_to 'Hapus', properti_riwayat_harga_path(@properti, r), method: :delete, data: { confirm: 'Yakin?' } %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h3>Analisis Harga</h3>
+    <ul>
+      <% @analisis_hargas.each do |a| %>
+        <li>
+          <strong><%= a.metode %></strong> — Rp <%= number_with_delimiter(a.harga_rekomendasi || 0) %>
+          <% if user_signed_in? %>
+            <%= link_to 'Hapus', properti_analisis_harga_path(@properti, a), method: :delete, data: { confirm: 'Yakin?' } %>
+          <% end %>
+        </li>
+      <% end %>
+    </ul>
+
+    <% if user_signed_in? %>
+      <%= link_to 'Tambah Riwayat', new_properti_riwayat_harga_path(@properti), class: 'btn' %>
+      <%= link_to 'Tambah Analisis', new_properti_analisis_harga_path(@properti), class: 'btn btn-secondary' %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Leaflet map init -->
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+    const lat = <%= (@properti.latitude || 0).to_f %>;
+    const lng = <%= (@properti.longitude || 0).to_f %>;
+    if(typeof L !== 'undefined') {
+      const map = L.map('map').setView([lat, lng], 14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+      L.marker([lat, lng]).addTo(map);
+    }
+  });
+</script>

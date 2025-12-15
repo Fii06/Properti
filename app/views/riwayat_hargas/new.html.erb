@@ -1,0 +1,12 @@
+<h2>Tambah Riwayat Harga</h2>
+<%= form_with model: [@properti, @riwayat], local: true do |f| %>
+  <div class="form-group">
+    <%= f.label :tanggal %>
+    <%= f.date_field :tanggal, class: 'form-control' %>
+  </div>
+  <div class="form-group">
+    <%= f.label :harga %>
+    <%= f.number_field :harga, step: :any, class: 'form-control' %>
+  </div>
+  <%= f.submit 'Simpan', class: 'btn btn-primary' %>
+<% end %>
