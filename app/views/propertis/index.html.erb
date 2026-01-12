@@ -1,21 +1,21 @@
-<h1 class="page-title">Daftar Properti</h1>
+<h1>Daftar Properti</h1>
 
-<div class="property-grid container">
+<div class="grid cols-3">
   <% @propertis.each do |p| %>
-    <div class="property-card">
-      <div class="card-body">
+    <article class="card">
+
+      <% if p.images.any? %>
+        <img src="data:image/jpeg;base64,<%= p.images.first %>">
+      <% end %>
+
+      <div class="card-content">
         <h3><%= p.alamat %></h3>
-        <div class="muted">Luas: <%= p.luas_tanah %> m²</div>
-        <div class="price">Rp <%= number_with_delimiter(p.harga_pasar || 0) %></div>
-        <div class="actions">
-          <%= link_to 'Detail', properti_path(p), class: 'btn' %>
-          <% if user_signed_in? %>
-            <%= link_to 'Edit', edit_properti_path(p), class: 'btn btn-secondary' %>
-          <% end %>
+        <div class="meta">
+          Harga: <%= number_to_currency(p.harga_pasar) %>
         </div>
+
+        <%= link_to "View Details", listing_path(p), class: "btn" %>
       </div>
-    </div>
+    </article>
   <% end %>
 </div>
-
-<%= paginate @propertis %>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Neighborhoods · RealtyStarter</title>
+  <%= stylesheet_link_tag "application", media: "all" %>
+  <!-- HEADER -->
+<header class="site-header">
+  <div class="container navbar">
+
+    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+      SPK<span>Properti</span>
+    <% end %>
+
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <%= link_to "Home", root_path %>
+      <%= link_to "Listings", listings_path %>
+      <%= link_to "Agents", agents_path %>
+      <%= link_to "Neighborhoods", neighborhoods_path, class: "active" %>      
+      <%= link_to "Services", services_path %>
+      <%= link_to "Blog", blog_path %>
+      <%= link_to "About", about_path %>
+      <%= link_to "Contact", contact_path %>  
+    </nav>
+
+    <div class="controls">
+      <button id="themeToggle" class="btn ghost" type="button" aria-label="Toggle dark mode">🌓</button>
+      <button id="hamburger" class="hamburger" type="button" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+    <main id="content" class="container">
+      <section class="hero">
+        <p class="badge">Explore</p>
+        <h1>Neighborhoods</h1>
+      </section>
+
+      <section class="section">
+        <div id="hoodGrid" class="grid cols-3"></div>
+      </section>
+    </main>
+    <footer>
+      <div class="container footer-inner">
+        <div>
+          © 2025 RealtyStarter — A student-friendly real estate template.
+        </div>
+        <div>
+          <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> ·
+          <a href="faq.html">FAQ</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- jQuery FIRST -->
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <!-- Then your main script -->
+    <script src="assets/js/main.js"></script>
+
+    <script>
+      (async function () {
+        const hoods = await loadJSON("data/neighborhoods.json");
+        const $grid = $("#hoodGrid");
+        hoods.forEach((n) =>
+          $grid.append(`
+    <article class="card">
+      <img src="${n.heroImage}" alt="${n.name}" loading="lazy"/>
+      <div class="card-content">
+        <h3 class="card-title"><a href="neighborhood-detail.html?id=${n.id}">${n.name}</a></h3>
+        <p>${n.description}</p>
+      </div>
+    </article>`)
+        );
+      })();
+    </script>
+  </body>
+</html>

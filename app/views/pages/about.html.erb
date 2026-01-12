@@ -1,0 +1,52 @@
+<header class="site-header">
+      <div class="container navbar">
+        <!-- LOGO -->
+        <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+          SPK<span>Properti</span>
+        <% end %>
+        <nav class="nav-links" id="nav-links" aria-label="Primary">
+          <a href="home.html" class="active">Home</a>
+          <a href="listings.html" class="">Listings</a>
+          <a href="agents.html" class="">Agents</a>
+          <a href="neighborhoods.html" class="">Neighborhoods</a>
+          <a href="services.html" class="">Services</a>
+          <a href="blog.html" class="">Blog</a>
+          <a href="about.html" class="">About</a>
+          <a href="contact.html" class="">Contact</a>
+        </nav>
+        <div class="controls">
+          <button
+            id="themeToggle"
+            class="btn ghost"
+            onclick="toggleTheme()"
+            aria-pressed="false"
+            aria-label="Toggle dark mode"
+          >
+            🌓
+          </button>
+          <button
+            id="hamburger"
+            class="hamburger"
+            aria-label="Menu"
+            aria-controls="nav-links"
+            aria-expanded="false"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+</header>
+
+<section class="hero">
+  <p class="badge">About</p>
+  <h1>We’re a small team of friendly agents</h1>
+  <p>Clean codebase · Accessible · Easy to customize</p>
+</section>
+
+
+<section class="section card card-content">
+  <p>
+    SPK Properti adalah sistem pendukung keputusan untuk
+    membantu memilih properti terbaik.
+  </p>
+</section>

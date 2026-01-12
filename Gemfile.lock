@@ -184,6 +184,10 @@ GEM
     marcel (1.1.0)
     matrix (0.4.3)
     method_source (1.1.0)
+    mime-types (3.7.0)
+      logger
+      mime-types-data (~> 3.2025, >= 3.2025.0507)
+    mime-types-data (3.2025.0924)
     mini_mime (1.1.5)
     minitest (5.25.5)
     mongo (2.21.3)
@@ -193,6 +197,9 @@ GEM
       activemodel (>= 5.1, < 8.1, != 7.0.0)
       concurrent-ruby (>= 1.0.5, < 2.0)
       mongo (>= 2.18.0, < 3.0.0)
+    mongoid-grid_fs (2.6.0)
+      mime-types (>= 1.0, < 4.0)
+      mongoid (>= 3.0, < 10.0)
     msgpack (1.8.0)
     multi_json (1.17.0)
     multi_xml (0.7.2)
@@ -418,6 +425,8 @@ DEPENDENCIES
   kaminari
   kaminari-mongoid
   mongoid
+  mongoid-grid_fs
+  nokogiri
   prawn
   propshaft
   pry-byebug

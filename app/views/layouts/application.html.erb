@@ -1,29 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="light">
 <head>
-  <title>PropertiKU</title>
-
+  <meta charset="utf-8">
+  <title>SPK Properti</title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
-  <!-- CSS Themewagon -->
-  <%= stylesheet_link_tag "application", media: "all" %>
-
-
-  <!-- JS -->
-  <%= javascript_include_tag "application" %>
-
+  <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+  <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
 </head>
 
 <body>
 
-  <%= render "layouts/navbar" %>
+<header class="site-header">
+</header>
 
-  <main role="main">
-    <%= yield %>
-  </main>
+<main id="content" class="container">
+  <%= yield %>
+</main>
 
-  <%= render "layouts/footer" %>
+<footer>
+</footer>
 
 </body>
 </html>

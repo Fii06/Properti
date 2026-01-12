@@ -1,19 +1,23 @@
-<nav class="navbar">
-  <div class="container">
-    <a class="brand" href="<%= root_path %>">PropertiKU</a>
-    <div id="dark-toggle" class="dark-toggle">🌙</div>
+# <nav class="navbar navbar-expand-lg navbar-light bg-white">
+#   <div class="container">
+#     <%= link_to 'SPK Properti', root_path, class: 'navbar-brand' %>
 
+#     <ul class="navbar-nav ms-auto">
+#       <li class="nav-item"><%= link_to 'Home', root_path, class: 'nav-link' %></li>
+#       <li class="nav-item"><%= link_to 'Properti', propertis_path, class: 'nav-link' %></li>
 
-    <div class="nav-links">
-      <%= link_to 'Home', root_path %>
-      <%= link_to 'Properti', propertis_path %>
-
-      <% if user_signed_in? %>
-        <%= link_to 'Tambah Properti', new_properti_path, class: 'btn' %>
-        <%= link_to "Logout", destroy_user_session_path, method: :delete %>
-      <% else %>
-        <%= link_to 'Login', new_user_session_path %>
-      <% end %>
-    </div>
-  </div>
-</nav>
+#       <% if user_signed_in? %>
+#         <li class="nav-item">
+#           <%= link_to 'Logout',
+#               destroy_user_session_path,
+#               method: :delete,
+#               class: 'nav-link text-danger' %>
+#         </li>
+#       <% else %>
+#         <li class="nav-item">
+#           <%= link_to 'Login', new_user_session_path, class: 'nav-link' %>
+#         </li>
+#       <% end %>
+#     </ul>
+#   </div>
+# </nav>

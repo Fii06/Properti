@@ -1,31 +1,28 @@
-<div class="container py-5">
-<div class="row">
+<h1>Jual Properti (SPK)</h1>
 
+<%= form_with model: @properti, url: listings_path, local: true do |f| %>
 
-<div class="col-md-6">
-<img src="https://via.placeholder.com/600x400" class="img-fluid rounded-4 shadow-sm" />
-</div>
+  <%= f.label :alamat %>
+  <%= f.text_field :alamat, class: "input", required: true %>
 
+  <div class="form-row">
+    <div>
+      <%= f.label :luas_tanah, "Luas Tanah (m²)" %>
+      <%= f.number_field :luas_tanah, class: "input" %>
+    </div>
+    <div>
+      <%= f.label :luas_bangunan, "Luas Bangunan (m²)" %>
+      <%= f.number_field :luas_bangunan, class: "input" %>
+    </div>
+  </div>
 
-<div class="col-md-6">
-<h2 class="fw-bold mb-3"><%= @properti.alamat %></h2>
-<p class="text-muted">Koordinat: <%= @properti.latitude %>, <%= @properti.longitude %></p>
-<p>Luas Tanah: <%= @properti.luas_tanah %> m²</p>
-<p>Luas Bangunan: <%= @properti.luas_bangunan %> m²</p>
-<p>Tahun Dibangun: <%= @properti.tahun_pembangunan %></p>
-<p>Status Kepemilikan: <%= @properti.status_kepemilikan %></p>
-<p>NJOP: Rp <%= number_with_delimiter(@properti.njop) %></p>
-<p>Harga Pasar: Rp <%= number_with_delimiter(@properti.harga_pasar) %></p>
+  <%= f.label :njop, "NJOP (Rp)" %>
+  <%= f.number_field :njop, class: "input" %>
 
+  <%= f.label :images, "Upload Foto (min. 5)" %>
+  <%= f.file_field :images, multiple: true, class: "input" %>
 
-<a class="btn btn-primary rounded-pill px-4 mt-3" href="/propertis/<%= @properti.id %>/edit">Edit</a>
-<%= link_to 'Kembali', propertis_path, class: "btn btn-secondary" %>
-</div>
+  <br>
+  <%= f.submit "Simpan & Hitung Harga", class: "btn" %>
 
-
-</div>
-</div>
-```
-
-
-```html
+<% end %>

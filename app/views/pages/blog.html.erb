@@ -1,0 +1,74 @@
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container navbar">
+
+    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+      SPK<span>Properti</span>
+    <% end %>
+
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <%= link_to "Home", root_path %>
+      <%= link_to "Listings", listings_path %>
+      <%= link_to "Agents", agents_path %>
+      <%= link_to "Neighborhoods", neighborhoods_path %>      
+      <%= link_to "Services", services_path %>
+      <%= link_to "Blog", blog_path, class: "active" %>
+      <%= link_to "About", about_path %>
+      <%= link_to "Contact", contact_path %>  
+    </nav>
+
+    <div class="controls">
+      <button id="themeToggle" class="btn ghost" type="button" aria-label="Toggle dark mode">🌓</button>
+      <button id="hamburger" class="hamburger" type="button" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <p class="badge">Insights</p>
+  <h1>Berita Properti</h1>
+  <p>Berita terbaru seputar properti dari Kompas Properti</p>
+</section>
+
+<section class="section">
+  <div class="grid cols-3">
+    <% @news.each do |n| %>
+      <article class="card">
+        <% if n.image.present? %>
+          <img src="<%= n.image %>" alt="<%= n.title %>" loading="lazy">
+        <% end %>
+
+        <div class="card-content">
+          <h3 class="card-title"><%= n.title %></h3>
+
+          <div class="meta">
+            <%= n.source %> •
+            <%= n.posted_at.present? ? n.posted_at : n.created_at.strftime("%d %B %Y") %>
+          </div>
+
+          <p>
+            <%= truncate(n.excerpt, length: 120) %>
+          </p>
+
+          <p style="margin-top: 1rem">
+            <%= link_to "View Detail",
+                        n.url,
+                        class: "btn",
+                        target: "_blank",
+                        rel: "noopener" %>
+          </p>
+        </div>
+      </article>
+    <% end %>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>© <%= Time.current.year %> SPK Properti. All rights reserved.</p>
+  </div>
+</footer>
+

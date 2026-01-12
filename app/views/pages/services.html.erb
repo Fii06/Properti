@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Services · SPK Properti</title>
+  <%= stylesheet_link_tag "application", media: "all" %>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container navbar">
+
+    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+      SPK<span>Properti</span>
+    <% end %>
+
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <%= link_to "Home", root_path %>
+      <%= link_to "Listings", listings_path %>
+      <%= link_to "Agents", agents_path %>
+      <%= link_to "Neighborhoods", neighborhoods_path %>   
+      <%= link_to "Services", services_path, class: "active" %>   
+      <%= link_to "Blog", blog_path %>
+      <%= link_to "About", about_path %>
+      <%= link_to "Contact", contact_path %>
+    </nav>
+
+    <div class="controls">
+      <button id="themeToggle" class="btn ghost" type="button" aria-label="Toggle dark mode">🌓</button>
+      <button id="hamburger" class="hamburger" type="button" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<!-- MAIN -->
+<main id="content" class="container">
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="badge">Services</p>
+    <h1>Jual Properti dengan Rekomendasi Harga SPK</h1>
+    <p>Masukkan data properti, sistem akan menghitung harga jual yang adil</p>
+  </section>
+
+  <!-- FORM -->
+  <section class="section card card-content">
+    <%= form_with url: preview_property_path, scope: :propertis, local: true do |f| %>
+
+      <%= f.label :alamat %>
+      <%= f.text_field :alamat, class: "input", required: true %>
+
+      <div class="form-row">
+        <div>
+          <%= f.label :luas_tanah, "Luas Tanah (m²)" %>
+          <%= f.number_field :luas_tanah, class: "input" %>
+        </div>
+        <div>
+          <%= f.label :luas_bangunan, "Luas Bangunan (m²)" %>
+          <%= f.number_field :luas_bangunan, class: "input" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <%= f.label :harga_tanah_input, "Harga Tanah (Rp)" %>
+          <%= f.number_field :harga_tanah_input, class: "input" %>
+        </div>
+        <div>
+          <%= f.label :harga_bangunan_input, "Harga Bangunan (Rp)" %>
+          <%= f.number_field :harga_bangunan_input, class: "input" %>
+        </div>
+      </div>
+
+      <%= f.label :images, "Foto Properti (min. 5)" %>
+      <%= f.file_field :images, multiple: true, class: "input" %>
+
+      <br>
+      <%= f.submit "Hitung Rekomendasi Harga", class: "btn" %>
+    <% end %>
+  </section>
+
+  <!-- HASIL REKOMENDASI -->
+  <% if @rekomendasi.present? %>
+    <section class="section">
+      <h2>Pilih Harga Jual</h2>
+
+      <%= form_with url: create_property_path, scope: :propertis, local: true do |f| %>
+
+        <% @properti.attributes.each do |k, v| %>
+          <%= hidden_field_tag "propertis[#{k}]", v unless k =~ /_id|created_at|updated_at/ %>
+        <% end %>
+
+        <% @images.each do |img| %>
+          <%= hidden_field_tag "propertis[images][]", img %>
+        <% end %>
+
+        <div class="grid cols-3">
+          <% @rekomendasi.each do |k, v| %>
+            <label class="card card-content">
+              <%= radio_button_tag :harga_final, v, false, required: true %>
+              <h3><%= k.capitalize %></h3>
+              <p><%= number_to_currency(v, unit: "Rp ") %></p>
+            </label>
+          <% end %>
+        </div>
+
+        <br>
+        <%= submit_tag "Simpan & Publikasikan", class: "btn" %>
+      <% end %>
+    </section>
+  <% end %>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner">
+    <div>© 2025 SPK Properti</div>
+    <div>
+      <%= link_to "Privacy", privacy_path %> ·
+      <%= link_to "Terms", terms_path %> ·
+      <%= link_to "FAQ", faq_path %>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

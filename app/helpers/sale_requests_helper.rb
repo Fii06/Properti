@@ -1,0 +1,2 @@
+module SaleRequestsHelper
+end

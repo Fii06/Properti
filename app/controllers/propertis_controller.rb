@@ -1,58 +1,66 @@
 class PropertisController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
-  before_action :set_properti, only: [:show, :edit, :update, :destroy]
+  def preview
+    tanah  = params[:propertis][:harga_tanah_input].to_i
+    bangun = params[:propertis][:harga_bangunan_input].to_i
+    dasar  = tanah + bangun
 
-  def index
-    @propertis = Propertis.desc(:created_at).page(params[:page]).per(12)
-  end
+    @rekomendasi = {
+      min: (dasar * 0.95).to_i,
+      mid: dasar,
+      max: (dasar * 1.10).to_i
+    }
 
-  def show
-    @riwayat_hargas = @properti.riwayat_hargas.order_by(tanggal: :desc)
-    @analisis_hargas = @properti.analisis_hargas.order_by(created_at: :desc)
-  end
+    # hanya field yang ADA di model
+    @properti = Propertis.new(
+      alamat: params[:propertis][:alamat],
+      luas_tanah: params[:propertis][:luas_tanah],
+      luas_bangunan: params[:propertis][:luas_bangunan]
+    )
 
-  def new
-    @properti = current_user.propertis.build
-    @all_fasilitas = Fasilitas.all
+    @images = encode_images(params[:propertis][:images])
+
+    render "pages/services"
   end
 
   def create
-    @properti = current_user.propertis.build(properti_params)
+    @properti = Propertis.new(
+      alamat: params[:propertis][:alamat],
+      luas_tanah: params[:propertis][:luas_tanah],
+      luas_bangunan: params[:propertis][:luas_bangunan],
+      harga_pasar: params[:harga_final],
+      images: encode_images(params[:propertis][:images])
+    )
+
     if @properti.save
-      redirect_to @properti, notice: "Properti berhasil dibuat."
+      redirect_to listings_path, notice: "Properti berhasil dipublikasikan"
     else
-      @all_fasilitas = Fasilitas.all
-      render :new, status: :unprocessable_entity
+      render "pages/services"
     end
   end
 
-  def edit
-    @all_fasilitas = Fasilitas.all
-  end
-
-  def update
-    if @properti.update(properti_params)
-      redirect_to @properti, notice: "Properti berhasil diperbarui."
-    else
-      @all_fasilitas = Fasilitas.all
-      render :edit, status: :unprocessable_entity
-    end
-  end
-
-  def destroy
-    @properti.destroy
-    redirect_to propertis_path, notice: "Properti berhasil dihapus."
+  def show
+    @properti = Propertis.find(params[:id])
+  rescue Mongoid::Errors::DocumentNotFound
+    redirect_to listings_path, alert: "Properti tidak ditemukan"
   end
 
   private
 
-  def set_properti
-    @properti = Propertis.find(params[:id])
+  def property_params
+    params.require(:propertis).permit(
+    :alamat,
+    :luas_tanah,
+    :luas_bangunan,
+    images: []
+  )
   end
 
-  def properti_params
-    params.require(:propertis).permit(:alamat, :latitude, :longitude,
-      :luas_tanah, :luas_bangunan, :tahun_pembangunan, :status_kepemilikan,
-      :njop, :harga_pasar, :image_url, :deskripsi, fasilitas_ids: [])
+  def encode_images(files)
+    return [] unless files
+
+    files.map do |file|
+      Base64.encode64(file.read)
+    end
   end
 end
+
