@@ -8,44 +8,43 @@
     <link rel="stylesheet" href="assets/css/contact.css" />
     
     
-  </head>
-  <body>
-    <a href="#content" class="skip-link">Skip to content</a>
     <header class="site-header">
-      <div class="container navbar">
-        <a class="logo" href="home.html" aria-label="Realty Starter Home"
-          >Realty<span>Starter</span></a
-        >
-        <nav class="nav-links" id="navLinks" aria-label="Primary">
-          <a href="home.html" class="">Home</a>
-          <a href="listings.html" class="">Listings</a>
-          <a href="agents.html" class="">Agents</a>
-          <a href="neighborhoods.html" class="">Neighborhoods</a>
-          <a href="blog.html" class="">Blog</a>
-          <a href="about.html" class="">About</a>
-          <a href="contact.html" class="active">Contact</a>
-        </nav>
-        <div class="controls">
-          <button
-            id="themeToggle"
-            class="btn ghost"
-            onclick="toggleTheme()"
-            aria-pressed="false"
-            aria-label="Toggle dark mode"
-          >
-            🌓
-          </button>
-          <button
-            id="hamburger"
-            class="hamburger"
-            aria-label="Menu"
-            aria-controls="navLinks"
-            aria-expanded="false"
-          >
-            <span></span><span></span><span></span>
-          </button>
+        <div class="container navbar">
+          <!-- LOGO -->
+          <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+            SPK<span>Properti</span>
+          <% end %>
+          <nav class="nav-links" id="nav-links" aria-label="Primary">
+            <a href="home.html" class="">Home</a>
+            <a href="listings.html" class="">Listings</a>
+            <a href="agents.html" class="">Agents</a>
+            <a href="neighborhoods.html" class="">Neighborhoods</a>
+            <a href="services.html" class="">Services</a>
+            <a href="blog.html" class="">Blog</a>
+            <a href="about.html" class="">About</a>
+            <a href="contact.html" class="active">Contact</a>
+          </nav>
+          <div class="controls">
+            <button
+              id="themeToggle"
+              class="btn ghost"
+              onclick="toggleTheme()"
+              aria-pressed="false"
+              aria-label="Toggle dark mode"
+            >
+              🌓
+            </button>
+            <button
+              id="hamburger"
+              class="hamburger"
+              aria-label="Menu"
+              aria-controls="nav-links"
+              aria-expanded="false"
+            >
+              <span></span><span></span><span></span>
+            </button>
+          </div>
         </div>
-      </div>
     </header>
     <main id="content" class="container">
       <section class="hero">

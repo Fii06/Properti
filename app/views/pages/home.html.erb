@@ -87,18 +87,13 @@
     <div class="grid cols-3">
       <% @propertis.first(6).each do |p| %>
         <article class="card">
-
-          <% if p.images.any? %>
-            <img src="data:image/jpeg;base64,<%= p.images.first %>" alt="Properti">
-          <% end %>
-
+          <img src="https://picsum.photos/600/400?random=<%= p.id %>" alt="Properti">
           <div class="card-content">
             <h3><%= p.alamat %></h3>
-            <div class="meta">
-              Harga: <%= number_to_currency(p.harga_pasar, unit: "Rp ") %>
-            </div>
-
-            <%= link_to "View Details", listing_path(p), class: "btn block" %>
+            <div class="meta">Harga: <%= number_to_currency(p.harga_pasar) %></div>
+            <div class="meta">Luas Tanah: <%= p.luas_tanah %> m²</div>
+            <br>
+            <%= link_to "View Details", listing_path(p), class: "btn" %>
           </div>
         </article>
       <% end %>
@@ -118,6 +113,27 @@
     </div>
   </div>
 </footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+
+    if (hamburger && navLinks) {
+      // toggle menu
+      hamburger.addEventListener("click", function () {
+        navLinks.classList.toggle("open");
+      });
+
+      // klik luar = tutup menu
+      document.addEventListener("click", function (e) {
+        if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+          navLinks.classList.remove("open");
+        }
+      });
+    }
+  });
+</script>
 
 </body>
 </html>
