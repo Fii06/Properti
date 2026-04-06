@@ -26,8 +26,22 @@
     </nav>
 
     <div class="controls">
-      <button id="themeToggle" class="btn ghost" type="button" aria-label="Toggle dark mode">🌓</button>
-      <button id="hamburger" class="hamburger" type="button" aria-label="Menu">
+      <button
+        id="themeToggle"
+        class="btn ghost"
+        onclick="toggleTheme()"
+        aria-pressed="false"
+        aria-label="Toggle dark mode"
+      >
+        🌓
+      </button>
+      <button
+        id="hamburger"
+        class="hamburger"
+        aria-label="Menu"
+        aria-controls="nav-links"
+        aria-expanded="false"
+      >
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -71,16 +85,37 @@
         const $grid = $("#agentGrid");
         agents.forEach((a) =>
           $grid.append(`
-    <article class="card">
-      <img src="${a.photo}" alt="${a.name}" loading="lazy"/>
-      <div class="card-content">
-        <h3 class="card-title"><a href="agent-detail.html?id=${a.id}">${a.name}</a></h3>
-        <div class="meta">${a.title}</div>
-        <p><a class="btn" href="agent-detail.html?id=${a.id}">View Profile</a></p>
-      </div>
-    </article>`)
+          <article class="card">
+            <img src="${a.photo}" alt="${a.name}" loading="lazy"/>
+            <div class="card-content">
+              <h3 class="card-title"><a href="agent-detail.html?id=${a.id}">${a.name}</a></h3>
+              <div class="meta">${a.title}</div>
+              <p><a class="btn" href="agent-detail.html?id=${a.id}">View Profile</a></p>
+            </div>
+          </article>`)
         );
       })();
     </script>
   </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const hamburger = document.getElementById("hamburger");
+      const navLinks = document.getElementById("nav-links");
+
+      if (hamburger && navLinks) {
+        // toggle menu
+        hamburger.addEventListener("click", function () {
+          navLinks.classList.toggle("open");
+        });
+
+        // klik luar = tutup menu
+        document.addEventListener("click", function (e) {
+          if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+            navLinks.classList.remove("open");
+          }
+        });
+      }
+    });
+  </script>
 </html>

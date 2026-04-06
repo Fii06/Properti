@@ -1,3 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SPK Properti</title>
+  <%= stylesheet_link_tag "application", media: "all" %>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="container navbar">
+
+    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+      SPK<span>Properti</span>
+    <% end %>
+
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <%= link_to "Home", root_path, class: "active" %>
+      <%= link_to "Listings", listings_path %>
+      <%= link_to "Agents", agents_path %>
+      <%= link_to "Neighborhoods", neighborhoods_path %>      
+      <%= link_to "Services", services_path %>
+      <%= link_to "Blog", blog_path %>
+      <%= link_to "About", about_path %>
+      <%= link_to "Contact", contact_path %>  
+    </nav>
+
+    <div class="controls">
+      <button
+        id="themeToggle"
+        class="btn ghost"
+        onclick="toggleTheme()"
+        aria-pressed="false"
+        aria-label="Toggle dark mode"
+      >
+        🌓
+      </button>
+      <button
+        id="hamburger"
+        class="hamburger"
+        aria-label="Menu"
+        aria-controls="nav-links"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
 <section class="hero">
   <div class="container">
     <h1 data-page="Detail"><%= @properti.alamat %></h1>
@@ -28,3 +81,39 @@
     </div>
   </div>
 </section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner">
+    <div>© 2025 SPK Properti</div>
+    <div>
+      <%= link_to "Privacy", privacy_path %> ·
+      <%= link_to "Terms", terms_path %> ·
+      <%= link_to "FAQ", faq_path %>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+
+    if (hamburger && navLinks) {
+      // toggle menu
+      hamburger.addEventListener("click", function () {
+        navLinks.classList.toggle("open");
+      });
+
+      // klik luar = tutup menu
+      document.addEventListener("click", function (e) {
+        if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+          navLinks.classList.remove("open");
+        }
+      });
+    }
+  });
+</script>
+
+</body>
+</html>

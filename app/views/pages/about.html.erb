@@ -50,3 +50,24 @@
     membantu memilih properti terbaik.
   </p>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const hamburger = document.getElementById("hamburger");
+    const navLinks = document.getElementById("nav-links");
+
+    if (hamburger && navLinks) {
+      // toggle menu
+      hamburger.addEventListener("click", function () {
+        navLinks.classList.toggle("open");
+      });
+
+      // klik luar = tutup menu
+      document.addEventListener("click", function (e) {
+        if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+          navLinks.classList.remove("open");
+        }
+      });
+    }
+  });
+</script>
