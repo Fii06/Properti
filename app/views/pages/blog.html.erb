@@ -50,7 +50,10 @@
 <section class="section">
   <div class="grid cols-3">
     <% @news.each do |n| %>
-      <article class="card">
+      <article class="card"
+         onclick="window.open('<%= n.url %>', '_blank')"
+         style="cursor: pointer;">
+
         <% if n.image.present? %>
           <img src="<%= n.image %>" alt="<%= n.title %>" loading="lazy">
         <% end %>
@@ -65,14 +68,6 @@
 
           <p>
             <%= truncate(n.excerpt, length: 120) %>
-          </p>
-
-          <p style="margin-top: 1rem">
-            <%= link_to "View Detail",
-                        n.url,
-                        class: "btn",
-                        target: "_blank",
-                        rel: "noopener" %>
           </p>
         </div>
       </article>
