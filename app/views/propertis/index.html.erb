@@ -3,15 +3,14 @@
 <div class="grid cols-3">
   <% @propertis.each do |p| %>
     <article class="card">
-
-      <% if p.images.any? %>
-        <img src="data:image/jpeg;base64,<%= p.images.first %>">
+      <% if (image_src = property_image_src(p.images.first)).present? %>
+        <%= image_tag image_src, alt: p.alamat, loading: "lazy" %>
       <% end %>
 
       <div class="card-content">
         <h3><%= p.alamat %></h3>
         <div class="meta">
-          Harga: <%= number_to_currency(p.harga_pasar) %>
+          Harga: <%= rupiah(p.harga_pasar) %>
         </div>
 
         <%= link_to "View Details", listing_path(p), class: "btn" %>

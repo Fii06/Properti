@@ -69,7 +69,9 @@
     <div class="grid cols-3">
       <% @propertis.images.each do |img| %>
         <article class="card">
-          <img src="<%= img %>" alt="Foto Properti">
+          <% if (image_src = property_image_src(img)).present? %>
+            <%= image_tag image_src, alt: "Foto Properti", loading: "lazy" %>
+          <% end %>
         </article>
       <% end %>
     </div>
@@ -78,7 +80,7 @@
   <section class="section card card-content">
     <h3>Harga Jual</h3>
     <p style="font-size:1.4rem;font-weight:bold">
-      <%= number_to_currency(@propertis.harga_final) %>
+      <%= rupiah(@propertis.harga_pasar) %>
     </p>
   </section>
 
@@ -87,7 +89,9 @@
     <div class="grid cols-3">
       <% @propertis.images.each do |img| %>
         <div class="card">
-          <%= image_tag img, alt: "Foto Properti", loading: "lazy" %>
+          <% if (image_src = property_image_src(img)).present? %>
+            <%= image_tag image_src, alt: "Foto Properti", loading: "lazy" %>
+          <% end %>
         </div>
       <% end %>
     </div>
@@ -107,7 +111,7 @@
       <div class="card card-content">
         <h3>Harga Jual</h3>
         <p class="price">
-          <%= number_to_currency(@propertis.harga_final, unit: "Rp ") %>
+          <%= rupiah(@propertis.harga_pasar) %>
         </p>
 
         <p class="meta">

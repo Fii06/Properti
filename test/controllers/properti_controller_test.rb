@@ -53,6 +53,10 @@ class PropertisControllerTest < ActionDispatch::IntegrationTest
     }
 
     assert_redirected_to listings_path
+    follow_redirect!
+    assert_response :success
+    assert_includes response.body, "Harga: Rp "
+    assert_includes response.body, "data:image/"
 
     properti = Propertis.last
     assert_not_nil properti
@@ -61,6 +65,15 @@ class PropertisControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, properti.analisis_hargas.count
     assert_equal 910_000_000, properti.harga_pasar.to_i
     assert_equal "heuristic_fallback", properti.analisis_hargas.first.metode
+  end
+
+  test "preview accepts jpg uploads with non standard mime type" do
+    post preview_property_path, params: {
+      propertis: valid_property_params(images: uploaded_images(content_type: "image/jpg"))
+    }
+
+    assert_response :success
+    assert_includes response.body, "data:image/jpeg;base64,"
   end
 
   private
@@ -87,13 +100,13 @@ class PropertisControllerTest < ActionDispatch::IntegrationTest
     }
   end
 
-  def uploaded_images(count: 5)
+  def uploaded_images(count: 5, content_type: "image/jpeg")
     Array.new(count) do |index|
       file = Tempfile.new(["property-#{index}", ".jpg"])
       file.binmode
       file.write("fake-image-#{index}")
       file.rewind
-      Rack::Test::UploadedFile.new(file.path, "image/jpeg", true)
+      Rack::Test::UploadedFile.new(file.path, content_type, true)
     end
   end
 

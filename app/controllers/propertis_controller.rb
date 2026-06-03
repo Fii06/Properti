@@ -95,7 +95,10 @@ class PropertisController < ApplicationController
 
     raw_images.map do |image|
       if image.respond_to?(:read)
-        Base64.strict_encode64(image.read)
+        encoded_image = Base64.strict_encode64(image.read)
+        content_type = normalized_image_content_type(image)
+
+        "data:#{content_type};base64,#{encoded_image}"
       else
         image.to_s
       end
@@ -130,6 +133,15 @@ class PropertisController < ApplicationController
 
   def preview_images_path(token)
     preview_images_directory.join("#{token}.txt")
+  end
+
+  def normalized_image_content_type(image)
+    content_type = image.content_type.to_s.presence
+    extension = File.extname(image.original_filename.to_s).downcase
+
+    return "image/jpeg" if content_type == "image/jpg" || extension == ".jpg"
+
+    content_type || "image/jpeg"
   end
 
   def normalized_history_params
