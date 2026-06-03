@@ -3,6 +3,9 @@ class Propertis
   include Mongoid::Timestamps
 
   field :alamat, type: String
+  field :daerah, type: String
+  field :kecamatan, type: String
+  field :kelurahan, type: String
   field :latitude, type: Float
   field :longitude, type: Float
 
@@ -23,11 +26,39 @@ class Propertis
   field :harga_rekomendasi_max, type: BigDecimal
 
   belongs_to :user, optional: true
+  has_many :riwayat_hargas, class_name: "RiwayatHarga", inverse_of: :propertis, dependent: :destroy
+  has_many :analisis_hargas, class_name: "AnalisisHarga", inverse_of: :propertis, dependent: :destroy
+  has_and_belongs_to_many :fasilitas, class_name: "Fasilitas", inverse_of: :propertis
 
-  validates :alamat, :luas_tanah, :luas_bangunan, :njop, presence: true
+  validates :alamat, :daerah, :kecamatan, :kelurahan, :latitude, :longitude,
+            :luas_tanah, :luas_bangunan, :tahun_pembangunan, :status_kepemilikan,
+            presence: true
+  validate :njop_or_area_baseline_present
   validate :minimal_5_images
+  validate :harga_dimensions_positive
+
+  STATUS_KEPEMILIKAN = ["SHM", "HGB", "AJB", "Girik", "Lainnya"].freeze
 
   def minimal_5_images
     errors.add(:images, "minimal 5 gambar") if images.size < 5
+  end
+
+  private
+
+  def njop_or_area_baseline_present
+    return if njop.present?
+    return if daerah.present? && kecamatan.present? && kelurahan.present?
+
+    errors.add(:njop, "harus diisi atau area harus lengkap untuk lookup baseline")
+  end
+
+  def harga_dimensions_positive
+    if luas_tanah.present? && luas_tanah <= 0
+      errors.add(:luas_tanah, "harus lebih besar dari 0")
+    end
+
+    if luas_bangunan.present? && luas_bangunan <= 0
+      errors.add(:luas_bangunan, "harus lebih besar dari 0")
+    end
   end
 end

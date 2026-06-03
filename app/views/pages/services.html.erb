@@ -9,10 +9,8 @@
 
 <body>
 
-<!-- HEADER -->
 <header class="site-header">
   <div class="container navbar">
-
     <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
       SPK<span>Properti</span>
     <% end %>
@@ -21,8 +19,8 @@
       <%= link_to "Home", root_path %>
       <%= link_to "Listings", listings_path %>
       <%= link_to "Agents", agents_path %>
-      <%= link_to "Neighborhoods", neighborhoods_path %>   
-      <%= link_to "Services", services_path, class: "active" %>   
+      <%= link_to "Neighborhoods", neighborhoods_path %>
+      <%= link_to "Services", services_path, class: "active" %>
       <%= link_to "Blog", blog_path %>
       <%= link_to "About", about_path %>
       <%= link_to "Contact", contact_path %>
@@ -48,78 +46,191 @@
         <span></span><span></span><span></span>
       </button>
     </div>
-
   </div>
 </header>
 
-<!-- MAIN -->
 <main id="content" class="container">
-
-  <!-- HERO -->
   <section class="hero">
     <p class="badge">Services</p>
     <h1>Jual Properti dengan Rekomendasi Harga SPK</h1>
-    <p>Masukkan data properti, sistem akan menghitung harga jual yang adil</p>
+    <p>Masukkan data properti lengkap, lihat estimasi berbasis NJOP Bojongsoang, lalu pilih harga publish terbaik.</p>
   </section>
 
-  <!-- FORM -->
+  <% riwayat_rows = Array(@riwayat_hargas).map { |item| item.respond_to?(:with_indifferent_access) ? item.with_indifferent_access : item } %>
+  <% riwayat_rows = [{}] if riwayat_rows.empty? %>
+  <% riwayat_rows << {} while riwayat_rows.length < 3 %>
+
   <section class="section card card-content">
+    <% if @properti&.errors&.any? %>
+      <div class="alert error">
+        <strong>Data belum bisa diproses:</strong>
+        <ul class="error-list">
+          <% @properti.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <%= form_with url: preview_property_path, scope: :propertis, local: true do |f| %>
-
-      <%= f.label :alamat %>
-      <%= f.text_field :alamat, class: "input", required: true %>
+      <%= f.label :alamat, "Alamat lengkap" %>
+      <%= f.text_area :alamat, class: "input", required: true, rows: 3, value: @properti&.alamat %>
 
       <div class="form-row">
         <div>
-          <%= f.label :luas_tanah, "Luas Tanah (m²)" %>
-          <%= f.number_field :luas_tanah, class: "input" %>
+          <%= f.label :daerah, "Daerah" %>
+          <%= f.text_field :daerah, class: "input", required: true, value: @properti&.daerah %>
         </div>
         <div>
-          <%= f.label :luas_bangunan, "Luas Bangunan (m²)" %>
-          <%= f.number_field :luas_bangunan, class: "input" %>
+          <%= f.label :kecamatan, "Kecamatan" %>
+          <%= f.text_field :kecamatan, class: "input", required: true, value: @properti&.kecamatan %>
         </div>
       </div>
 
       <div class="form-row">
         <div>
-          <%= f.label :harga_tanah_input, "Harga Tanah (Rp)" %>
-          <%= f.number_field :harga_tanah_input, class: "input" %>
+          <%= f.label :kelurahan, "Kelurahan" %>
+          <%= f.text_field :kelurahan, class: "input", required: true, value: @properti&.kelurahan %>
         </div>
         <div>
-          <%= f.label :harga_bangunan_input, "Harga Bangunan (Rp)" %>
-          <%= f.number_field :harga_bangunan_input, class: "input" %>
+          <%= f.label :status_kepemilikan, "Status kepemilikan" %>
+          <%= f.select :status_kepemilikan, options_for_select(Propertis::STATUS_KEPEMILIKAN, @properti&.status_kepemilikan), { prompt: "Pilih status" }, class: "input", required: true %>
         </div>
       </div>
 
-      <%= f.label :images, "Foto Properti (min. 5)" %>
-      <%= f.file_field :images, multiple: true, class: "input" %>
+      <div class="form-row">
+        <div>
+          <%= f.label :latitude, "Latitude" %>
+          <%= f.number_field :latitude, class: "input", required: true, step: :any, value: @properti&.latitude %>
+        </div>
+        <div>
+          <%= f.label :longitude, "Longitude" %>
+          <%= f.number_field :longitude, class: "input", required: true, step: :any, value: @properti&.longitude %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <%= f.label :luas_tanah, "Luas tanah (m²)" %>
+          <%= f.number_field :luas_tanah, class: "input", required: true, value: @properti&.luas_tanah %>
+        </div>
+        <div>
+          <%= f.label :luas_bangunan, "Luas bangunan (m²)" %>
+          <%= f.number_field :luas_bangunan, class: "input", required: true, value: @properti&.luas_bangunan %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <%= f.label :tahun_pembangunan, "Tahun pembangunan" %>
+          <%= f.number_field :tahun_pembangunan, class: "input", required: true, value: @properti&.tahun_pembangunan %>
+        </div>
+        <div>
+          <%= f.label :njop, "NJOP override (Rp per m², opsional)" %>
+          <%= f.number_field :njop, class: "input", step: :any, value: @properti&.njop %>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <h2>Riwayat Harga Properti</h2>
+        <p>Isi minimal satu riwayat untuk membantu sistem membaca anchor harga pasar.</p>
+      </div>
+
+      <% riwayat_rows.each_with_index do |riwayat, index| %>
+        <div class="form-row">
+          <div>
+            <label for="propertis_riwayat_hargas_<%= index %>_tanggal">Tanggal riwayat <%= index + 1 %></label>
+            <input
+              type="date"
+              id="propertis_riwayat_hargas_<%= index %>_tanggal"
+              name="propertis[riwayat_hargas][][tanggal]"
+              class="input"
+              value="<%= riwayat[:tanggal] || riwayat['tanggal'] %>"
+            >
+          </div>
+          <div>
+            <label for="propertis_riwayat_hargas_<%= index %>_harga">Harga riwayat <%= index + 1 %> (Rp)</label>
+            <input
+              type="number"
+              id="propertis_riwayat_hargas_<%= index %>_harga"
+              name="propertis[riwayat_hargas][][harga]"
+              class="input"
+              value="<%= riwayat[:harga] || riwayat['harga'] %>"
+            >
+          </div>
+        </div>
+      <% end %>
+
+      <%= f.label :images, "Foto properti (minimal 5 file)" %>
+      <%= f.file_field :images, multiple: true, class: "input", required: @encoded_images.blank? %>
+      <% if @encoded_images.present? %>
+        <p class="helper-text"><%= @encoded_images.size %> foto siap dipakai untuk publish akhir.</p>
+      <% end %>
 
       <br>
       <%= f.submit "Hitung Rekomendasi Harga", class: "btn" %>
     <% end %>
   </section>
 
-  <!-- HASIL REKOMENDASI -->
-  <% if @rekomendasi.present? %>
+  <% if @rekomendasi.present? && @analysis_result.present? %>
+    <section class="section">
+      <div class="card card-content">
+        <h2>Ringkasan Estimasi</h2>
+        <p><%= @analysis_result[:explanation] %></p>
+        <div class="meta-stack">
+          <div>Baseline NJOP: <strong><%= number_to_currency(@analysis_result[:baseline_njop], unit: "Rp ", precision: 0) %></strong> per m²</div>
+          <div>Nilai tanah: <strong><%= number_to_currency(@analysis_result.dig(:adjustments, :land_value), unit: "Rp ", precision: 0) %></strong></div>
+          <div>Nilai bangunan: <strong><%= number_to_currency(@analysis_result.dig(:adjustments, :building_value), unit: "Rp ", precision: 0) %></strong></div>
+          <div>Rata-rata riwayat harga: <strong><%= number_to_currency(@analysis_result.dig(:adjustments, :history_anchor), unit: "Rp ", precision: 0) %></strong></div>
+          <div>Metode: <strong><%= @analysis_result[:method] %></strong></div>
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <h2>Pilih Harga Jual</h2>
 
       <%= form_with url: create_property_path, scope: :propertis, local: true do |f| %>
+        <%= hidden_field_tag :preview_token, @preview_token %>
 
-        <% @properti.attributes.each do |k, v| %>
-          <%= hidden_field_tag "propertis[#{k}]", v unless k =~ /_id|created_at|updated_at/ %>
+        <% property_hidden_fields = {
+          alamat: @properti.alamat,
+          daerah: @properti.daerah,
+          kecamatan: @properti.kecamatan,
+          kelurahan: @properti.kelurahan,
+          latitude: @properti.latitude,
+          longitude: @properti.longitude,
+          luas_tanah: @properti.luas_tanah,
+          luas_bangunan: @properti.luas_bangunan,
+          tahun_pembangunan: @properti.tahun_pembangunan,
+          status_kepemilikan: @properti.status_kepemilikan,
+          njop: @properti.njop
+        } %>
+
+        <% property_hidden_fields.each do |key, value| %>
+          <%= hidden_field_tag "propertis[#{key}]", value %>
         <% end %>
 
-        <% @images.each do |img| %>
-          <%= hidden_field_tag "propertis[images][]", img %>
+        <% Array(@riwayat_hargas).each do |riwayat| %>
+          <%= hidden_field_tag "propertis[riwayat_hargas][][tanggal]", riwayat[:tanggal] || riwayat["tanggal"] %>
+          <%= hidden_field_tag "propertis[riwayat_hargas][][harga]", riwayat[:harga] || riwayat["harga"] %>
         <% end %>
 
         <div class="grid cols-3">
-          <% @rekomendasi.each do |k, v| %>
-            <label class="card card-content">
-              <%= radio_button_tag :harga_final, v, false, required: true %>
-              <h3><%= k.capitalize %></h3>
-              <p><%= number_to_currency(v, unit: "Rp ") %></p>
+          <% @rekomendasi.each do |key, value| %>
+            <label class="card card-content recommendation-card">
+              <%= radio_button_tag :harga_final, value, key == :mid, required: true %>
+              <h3><%= key.capitalize %></h3>
+              <p class="price"><%= number_to_currency(value, unit: "Rp ", precision: 0) %></p>
+              <p class="helper-text">
+                <% if key == :min %>
+                  Opsi konservatif untuk percepatan jual.
+                <% elsif key == :mid %>
+                  Opsi seimbang berdasarkan baseline dan atribut properti.
+                <% else %>
+                  Opsi optimistis dengan ruang negosiasi lebih besar.
+                <% end %>
+              </p>
             </label>
           <% end %>
         </div>
@@ -129,10 +240,8 @@
       <% end %>
     </section>
   <% end %>
-
 </main>
 
-<!-- FOOTER -->
 <footer>
   <div class="container footer-inner">
     <div>© 2025 SPK Properti</div>
@@ -150,12 +259,10 @@
     const navLinks = document.getElementById("nav-links");
 
     if (hamburger && navLinks) {
-      // toggle menu
       hamburger.addEventListener("click", function () {
         navLinks.classList.toggle("open");
       });
 
-      // klik luar = tutup menu
       document.addEventListener("click", function (e) {
         if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
           navLinks.classList.remove("open");

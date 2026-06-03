@@ -12,7 +12,6 @@ class PagesController < ApplicationController
   def listings
     @propertis = Propertis.all
 
-    # SEARCH
     if params[:q].present?
       keyword = /#{Regexp.escape(params[:q])}/i
       @propertis = @propertis.where(
@@ -23,12 +22,9 @@ class PagesController < ApplicationController
       )
     end
 
-    # FILTER HARGA MAKS
     if params[:harga_pasar].present?
-      @propertis = @propertis.where(:harga_pasar.lte => params[:harga_pasar].to_id)
-      # @propertis = SaleRequest.where(published: true).order(created_at: :desc)
+      @propertis = @propertis.where(:harga_pasar.lte => params[:harga_pasar].to_i)
     end
-    
   end
 
   def listing_detail
@@ -43,6 +39,10 @@ class PagesController < ApplicationController
 
   def services
     @properti = Propertis.new
+    @riwayat_hargas = [{}]
+    @rekomendasi = nil
+    @analysis_result = nil
+    @encoded_images = []
   end
 
   def blog

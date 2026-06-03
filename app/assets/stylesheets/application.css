@@ -189,6 +189,19 @@ a:hover {
   color: var(--muted);
 }
 
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--surface);
+  color: var(--primary);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 /* ================================
    GRID & CARDS
    ================================ */
@@ -285,6 +298,12 @@ a:hover {
   width: 100%;
 }
 
+.btn.ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
 /* ================================
    FORMS
    ================================ */
@@ -309,12 +328,65 @@ select {
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr 1fr;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 700px) {
   .form-row {
     grid-template-columns: 1fr;
   }
+}
+
+.input {
+  margin-top: 0.35rem;
+}
+
+.section {
+  margin-top: 2rem;
+}
+
+.section-divider {
+  margin: 1.5rem 0 0.75rem;
+}
+
+.section-divider h2 {
+  margin-bottom: 0.25rem;
+}
+
+.helper-text {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.meta-stack {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.recommendation-card {
+  cursor: pointer;
+}
+
+.recommendation-card input[type="radio"] {
+  width: auto;
+  margin-bottom: 0.75rem;
+}
+
+.alert {
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.alert.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+}
+
+.error-list {
+  margin: 0.5rem 0 0;
+  padding-left: 1.25rem;
 }
 
 /* ================================
@@ -448,4 +520,3 @@ footer {
     height: 320px;
   }
 }
-

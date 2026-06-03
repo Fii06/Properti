@@ -62,21 +62,25 @@
   <div class="grid cols-2">
     <div class="card">
       <div class="card-content">
+        <p><strong>Daerah:</strong> <%= @properti.daerah %></p>
+        <p><strong>Kecamatan:</strong> <%= @properti.kecamatan %></p>
+        <p><strong>Kelurahan:</strong> <%= @properti.kelurahan %></p>
         <p><strong>Luas Tanah:</strong> <%= @properti.luas_tanah %> m²</p>
         <p><strong>Luas Bangunan:</strong> <%= @properti.luas_bangunan %> m²</p>
         <p><strong>Tahun:</strong> <%= @properti.tahun_pembangunan %></p>
+        <p><strong>Status Kepemilikan:</strong> <%= @properti.status_kepemilikan %></p>
+        <p><strong>NJOP:</strong> Rp <%= number_with_delimiter(@properti.njop.to_i) %> / m²</p>
       </div>
     </div>
 
     <div class="card">
       <div class="card-content">
         <div class="price">Rp <%= number_with_delimiter(@properti.harga_pasar) %></div>
-        <%= link_to "Edit", edit_properti_path(@properti), class: "btn block" %>
-        <%= link_to "Hapus", @properti,
-            method: :delete,
-            data: { confirm: "Yakin?" },
-            class: "btn secondary block",
-            style: "margin-top:0.5rem" %>
+        <p><strong>Range rekomendasi:</strong></p>
+        <p>Min: Rp <%= number_with_delimiter(@properti.harga_rekomendasi_min.to_i) %></p>
+        <p>Mid: Rp <%= number_with_delimiter(@properti.harga_rekomendasi_mid.to_i) %></p>
+        <p>Max: Rp <%= number_with_delimiter(@properti.harga_rekomendasi_max.to_i) %></p>
+        <%= link_to "Kembali ke Listings", listings_path, class: "btn block" %>
       </div>
     </div>
   </div>
