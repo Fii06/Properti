@@ -77,5 +77,4 @@ gem 'kaminari'
 gem 'kaminari-mongoid'
 
 group :development do
-  gem 'pry-byebug'
 end
