@@ -4,116 +4,281 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Neighborhoods · RealtyStarter</title>
-  <%= stylesheet_link_tag "application", media: "all" %>
-  <!-- HEADER -->
-<header class="site-header">
-  <div class="container navbar">
+    <%= stylesheet_link_tag "application", media: "all" %>
+    <style>
+      .neighborhood-shell {
+        padding-bottom: 3rem;
+      }
 
-    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
-      SPK<span>Properti</span>
-    <% end %>
+      .neighborhood-hero {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 1.5rem;
+        align-items: stretch;
+      }
 
-    <nav class="nav-links" id="nav-links" aria-label="Primary">
-      <%= link_to "Home", root_path %>
-      <%= link_to "Listings", listings_path %>
-      <%= link_to "Agents", agents_path %>
-      <%= link_to "Neighborhoods", neighborhoods_path, class: "active" %>      
-      <%= link_to "Services", services_path %>
-      <%= link_to "Blog", blog_path %>
-      <%= link_to "About", about_path %>
-      <%= link_to "Contact", contact_path %>  
-    </nav>
+      .neighborhood-intro,
+      .neighborhood-summary,
+      .category-filter,
+      .facility-card,
+      .empty-state {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+      }
 
-    <div class="controls">
-      <button
-        id="themeToggle"
-        class="btn ghost"
-        onclick="toggleTheme()"
-        aria-pressed="false"
-        aria-label="Toggle dark mode"
-      >
-        🌓
-      </button>
-      <button
-        id="hamburger"
-        class="hamburger"
-        aria-label="Menu"
-        aria-controls="nav-links"
-        aria-expanded="false"
-      >
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
-    <main id="content" class="container">
+      .neighborhood-intro,
+      .neighborhood-summary,
+      .category-filter,
+      .empty-state {
+        padding: 1.5rem;
+      }
+
+      .neighborhood-intro {
+        background:
+          radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 40%),
+          linear-gradient(135deg, var(--card), color-mix(in srgb, var(--surface) 85%, white));
+      }
+
+      .section-stack {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      .summary-number {
+        font-size: 2.2rem;
+        line-height: 1;
+        font-weight: 800;
+        margin: 0.35rem 0;
+      }
+
+      .filter-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1rem;
+      }
+
+      .filter-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.7rem 1rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: var(--text);
+        background: var(--surface);
+        font-weight: 600;
+      }
+
+      .filter-pill:hover,
+      .filter-pill.is-active {
+        background: var(--primary);
+        color: #fff;
+        text-decoration: none;
+        border-color: var(--primary);
+      }
+
+      .category-section {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .category-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: end;
+      }
+
+      .category-header h2 {
+        margin: 0;
+      }
+
+      .facility-card {
+        padding: 1.25rem;
+      }
+
+      .facility-card h3 {
+        margin-top: 0;
+        margin-bottom: 0.35rem;
+      }
+
+      .facility-meta {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .facility-description {
+        margin: 0.85rem 0 0;
+      }
+
+      .empty-state {
+        text-align: center;
+      }
+
+      @media (max-width: 900px) {
+        .neighborhood-hero {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="site-header">
+      <div class="container navbar">
+        <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+          SPK<span>Properti</span>
+        <% end %>
+
+        <nav class="nav-links" id="nav-links" aria-label="Primary">
+          <%= link_to "Home", root_path %>
+          <%= link_to "Listings", listings_path %>
+          <%= link_to "Agents", agents_path %>
+          <%= link_to "Neighborhoods", neighborhoods_path, class: "active" %>
+          <%= link_to "Services", services_path %>
+          <%= link_to "Blog", blog_path %>
+          <%= link_to "About", about_path %>
+          <%= link_to "Contact", contact_path %>
+        </nav>
+
+        <div class="controls">
+          <button
+            id="themeToggle"
+            class="btn ghost"
+            onclick="toggleTheme()"
+            aria-pressed="false"
+            aria-label="Toggle dark mode"
+          >
+            🌓
+          </button>
+          <button
+            id="hamburger"
+            class="hamburger"
+            aria-label="Menu"
+            aria-controls="nav-links"
+            aria-expanded="false"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main id="content" class="container neighborhood-shell">
       <section class="hero">
         <p class="badge">Explore</p>
-        <h1>Neighborhoods</h1>
+        <h1>Bojongsoang</h1>
+        <p>Fasilitas umum sekitar Bojongsoang dirender langsung dari backend agar lebih mudah dirawat dan dikembangkan.</p>
       </section>
 
-      <section class="section">
-        <div id="hoodGrid" class="grid cols-3"></div>
+      <section class="section neighborhood-hero">
+        <article class="neighborhood-intro">
+          <p class="badge">Neighborhood Snapshot</p>
+          <h2>Area yang dekat kampus, koridor utama, dan kebutuhan harian warga.</h2>
+          <p>
+            Halaman ini mengelompokkan fasilitas umum Bojongsoang per kategori supaya calon pembeli bisa cepat menilai
+            kenyamanan lingkungan sekitar properti.
+          </p>
+          <%= link_to "Lihat listing sekitar Bojongsoang", listings_path(q: "Bojongsoang"), class: "btn" %>
+        </article>
+
+        <div class="section-stack">
+          <article class="neighborhood-summary">
+            <p class="facility-meta">Total fasilitas tampil</p>
+            <p class="summary-number"><%= @total_fasilitas %></p>
+            <p class="facility-meta">
+              <%= @selected_category.present? ? "Filter aktif: #{@selected_category}" : "Semua kategori aktif" %>
+            </p>
+          </article>
+
+          <article class="neighborhood-summary">
+            <p class="facility-meta">Listing terkait area Bojongsoang</p>
+            <p class="summary-number"><%= @listing_bojongsoang_count %></p>
+            <p class="facility-meta">CTA ini diarahkan ke hasil pencarian listing Bojongsoang.</p>
+          </article>
+        </div>
       </section>
+
+      <section class="section category-filter">
+        <h2>Filter kategori fasilitas</h2>
+        <p class="facility-meta">Pilih kategori untuk fokus ke fasilitas yang paling relevan dengan kebutuhan calon pembeli.</p>
+
+        <div class="filter-pills">
+          <%= link_to "Semua", neighborhoods_path, class: ["filter-pill", ("is-active" if @selected_category.blank?)].compact.join(" ") %>
+          <% @available_categories.each do |category| %>
+            <%= link_to category.titleize, neighborhoods_path(category: category), class: ["filter-pill", ("is-active" if @selected_category == category)].compact.join(" ") %>
+          <% end %>
+        </div>
+      </section>
+
+      <% if @fasilitas_by_category.any? %>
+        <% @fasilitas_by_category.each do |category, fasilitas_list| %>
+          <section class="section category-section">
+            <div class="category-header">
+              <div>
+                <p class="badge"><%= category.titleize %></p>
+                <h2><%= fasilitas_list.size %> fasilitas untuk kategori ini</h2>
+              </div>
+              <%= link_to "Cari listing dekat #{category}", listings_path(q: "Bojongsoang"), class: "btn ghost" %>
+            </div>
+
+            <div class="grid cols-3">
+              <% fasilitas_list.each do |fasilitas| %>
+                <article class="facility-card">
+                  <p class="badge"><%= fasilitas.area_kelurahan %></p>
+                  <h3><%= fasilitas.nama %></h3>
+                  <p class="facility-meta"><%= fasilitas.alamat %></p>
+                  <p class="facility-meta">
+                    Koordinat: <%= fasilitas.latitude %>, <%= fasilitas.longitude %>
+                  </p>
+                  <p class="facility-description"><%= fasilitas.deskripsi_singkat %></p>
+                </article>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
+      <% else %>
+        <section class="section">
+          <div class="empty-state">
+            <h2>Belum ada fasilitas untuk filter ini.</h2>
+            <p>Silakan pilih kategori lain atau kembali ke semua kategori untuk melihat seluruh fasilitas Bojongsoang.</p>
+            <%= link_to "Tampilkan semua kategori", neighborhoods_path, class: "btn" %>
+          </div>
+        </section>
+      <% end %>
     </main>
+
     <footer>
       <div class="container footer-inner">
+        <div>Find Your Neighborhoods Here</div>
         <div>
-          Find Your Neighborhoods Here
-        </div>
-        <div>
-          <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> ·
-          <a href="faq.html">FAQ</a>
+          <%= link_to "Privacy", privacy_path %> ·
+          <%= link_to "Terms", terms_path %> ·
+          <%= link_to "FAQ", faq_path %>
         </div>
       </div>
     </footer>
 
-    <!-- jQuery FIRST -->
-    <script
-      src="https://code.jquery.com/jquery-3.7.1.min.js"
-      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-      crossorigin="anonymous"
-    ></script>
-    <!-- Then your main script -->
-    <script src="assets/js/main.js"></script>
-
     <script>
-      (async function () {
-        const hoods = await loadJSON("data/neighborhoods.json");
-        const $grid = $("#hoodGrid");
-        hoods.forEach((n) =>
-          $grid.append(`
-    <article class="card">
-      <img src="${n.heroImage}" alt="${n.name}" loading="lazy"/>
-      <div class="card-content">
-        <h3 class="card-title"><a href="neighborhood-detail.html?id=${n.id}">${n.name}</a></h3>
-        <p>${n.description}</p>
-      </div>
-    </article>`)
-        );
-      })();
+      document.addEventListener("DOMContentLoaded", function () {
+        const hamburger = document.getElementById("hamburger");
+        const navLinks = document.getElementById("nav-links");
+
+        if (hamburger && navLinks) {
+          hamburger.addEventListener("click", function () {
+            navLinks.classList.toggle("open");
+          });
+
+          document.addEventListener("click", function (e) {
+            if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
+              navLinks.classList.remove("open");
+            }
+          });
+        }
+      });
     </script>
   </body>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const hamburger = document.getElementById("hamburger");
-      const navLinks = document.getElementById("nav-links");
-
-      if (hamburger && navLinks) {
-        // toggle menu
-        hamburger.addEventListener("click", function () {
-          navLinks.classList.toggle("open");
-        });
-
-        // klik luar = tutup menu
-        document.addEventListener("click", function (e) {
-          if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
-            navLinks.classList.remove("open");
-          }
-        });
-      }
-    });
-  </script>
-
 </html>

@@ -1,0 +1,1 @@
+Fasilitas.seed_bojongsoang_defaults!
