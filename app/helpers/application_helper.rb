@@ -1,4 +1,13 @@
 module ApplicationHelper
+  def page_title(title = nil)
+    [title.presence, "SPK Properti"].compact.join(" · ")
+  end
+
+  def active_nav_class(key)
+    current_key = content_for?(:active_nav) ? content_for(:active_nav) : nil
+    "active" if current_key == key
+  end
+
   def rupiah(amount, precision: 0)
     number_to_currency(amount, unit: "Rp ", precision: precision)
   end

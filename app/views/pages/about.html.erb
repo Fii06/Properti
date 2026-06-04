@@ -1,73 +1,20 @@
-<header class="site-header">
-      <div class="container navbar">
-        <!-- LOGO -->
-        <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
-          SPK<span>Properti</span>
-        <% end %>
-        <nav class="nav-links" id="nav-links" aria-label="Primary">
-          <a href="home.html" class="active">Home</a>
-          <a href="listings.html" class="">Listings</a>
-          <a href="agents.html" class="">Agents</a>
-          <a href="neighborhoods.html" class="">Neighborhoods</a>
-          <a href="services.html" class="">Services</a>
-          <a href="blog.html" class="">Blog</a>
-          <a href="about.html" class="">About</a>
-          <a href="contact.html" class="">Contact</a>
-        </nav>
-        <div class="controls">
-          <button
-            id="themeToggle"
-            class="btn ghost"
-            onclick="toggleTheme()"
-            aria-pressed="false"
-            aria-label="Toggle dark mode"
-          >
-            🌓
-          </button>
-          <button
-            id="hamburger"
-            class="hamburger"
-            aria-label="Menu"
-            aria-controls="nav-links"
-            aria-expanded="false"
-          >
-            <span></span><span></span><span></span>
-          </button>
-        </div>
-      </div>
-</header>
+<% content_for :title, "About" %>
+<% content_for :active_nav, "about" %>
 
-<section class="hero">
-  <p class="badge">About</p>
-  <h1>We’re a small team of friendly agents</h1>
-  <p>Find Your Property on This Site</p>
-</section>
+<main id="content" class="container">
+  <section class="hero">
+    <span class="badge">About</span>
+    <h1>We’re a small team of friendly agents</h1>
+    <p>Find Your Property on This Site</p>
+  </section>
 
-
-<section class="section card card-content">
-  <p>
-    SPK Properti adalah sistem pendukung keputusan untuk
-    membantu memilih properti terbaik.
-  </p>
-</section>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("nav-links");
-
-    if (hamburger && navLinks) {
-      // toggle menu
-      hamburger.addEventListener("click", function () {
-        navLinks.classList.toggle("open");
-      });
-
-      // klik luar = tutup menu
-      document.addEventListener("click", function (e) {
-        if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
-          navLinks.classList.remove("open");
-        }
-      });
-    }
-  });
-</script>
+  <section class="section">
+    <div class="empty-state-panel empty-state">
+      <h2>Informasi about belum dilengkapi</h2>
+      <p>
+        SPK Properti masih berfokus pada pencarian dan rekomendasi properti terbaik.
+        Anda bisa melanjutkan ke daftar listing untuk mulai menjelajah.
+      </p>
+    </div>
+  </section>
+</main>

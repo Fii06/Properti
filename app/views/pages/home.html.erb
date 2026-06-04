@@ -1,82 +1,24 @@
-<!doctype html>
-<html lang="en" data-theme="light">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SPK Properti</title>
-  <%= stylesheet_link_tag "application", media: "all" %>
-</head>
+<% content_for :title, "Home" %>
+<% content_for :active_nav, "home" %>
 
-<body>
-
-<!-- HEADER -->
-<header class="site-header">
-  <div class="container navbar">
-
-    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
-      SPK<span>Properti</span>
-    <% end %>
-
-    <nav class="nav-links" id="nav-links" aria-label="Primary">
-      <%= link_to "Home", root_path, class: "active" %>
-      <%= link_to "Listings", listings_path %>
-      <%= link_to "Agents", agents_path %>
-      <%= link_to "Neighborhoods", neighborhoods_path %>      
-      <%= link_to "Services", services_path %>
-      <%= link_to "Blog", blog_path %>
-      <%= link_to "About", about_path %>
-      <%= link_to "Contact", contact_path %>  
-    </nav>
-
-    <div class="controls">
-      <button
-        id="themeToggle"
-        class="btn ghost"
-        onclick="toggleTheme()"
-        aria-pressed="false"
-        aria-label="Toggle dark mode"
-      >
-        🌓
-      </button>
-      <button
-        id="hamburger"
-        class="hamburger"
-        aria-label="Menu"
-        aria-controls="nav-links"
-        aria-expanded="false"
-      >
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
-
-<!-- MAIN -->
-<main class="container">
-
-  <!-- HERO -->
+<main id="content" class="container">
   <section class="hero hero-with-slider">
-
-    <!-- LEFT: SLIDER -->
     <div class="hero-slider">
       <div class="slides">
-
-        <% @propertis.first(3).each_with_index do |p, i| %>
-          <figure class="slide <%= 'is-active' if i == 0 %>">
-            <% if (image_src = property_image_src(p.images.first)).present? %>
-              <%= image_tag image_src, alt: p.alamat, loading: "lazy" %>
+        <% @propertis.first(3).each_with_index do |properti, index| %>
+          <figure class="slide <%= "is-active" if index.zero? %>">
+            <% if (image_src = property_image_src(properti.images.first)).present? %>
+              <%= image_tag image_src, alt: properti.alamat, loading: "lazy" %>
             <% end %>
-            <figcaption><%= p.alamat %></figcaption>
+            <figcaption><%= properti.alamat %></figcaption>
           </figure>
         <% end %>
-
       </div>
 
-      <button class="nav prev">‹</button>
-      <button class="nav next">›</button>
+      <button class="nav prev" type="button" aria-label="Previous slide">‹</button>
+      <button class="nav next" type="button" aria-label="Next slide">›</button>
     </div>
 
-    <!-- RIGHT: TEXT -->
     <div class="hero-content">
       <p class="badge">SPK Property</p>
       <h1>Temukan Harga Properti yang Adil & Masuk Akal</h1>
@@ -90,65 +32,26 @@
         <%= link_to "Lihat Listings", listings_path, class: "btn ghost" %>
       </div>
     </div>
-
   </section>
 
-  <!-- FEATURED LISTINGS -->
   <section class="section">
     <h2>Properti Terbaru</h2>
 
     <div class="grid cols-3">
-      <% @propertis.first(6).each do |p| %>
+      <% @propertis.first(6).each do |properti| %>
         <article class="card">
-          <% if (image_src = property_image_src(p.images.first)).present? %>
-            <%= image_tag image_src, alt: p.alamat, loading: "lazy" %>
+          <% if (image_src = property_image_src(properti.images.first)).present? %>
+            <%= image_tag image_src, alt: properti.alamat, loading: "lazy" %>
           <% end %>
           <div class="card-content">
-            <h3><%= p.alamat %></h3>
-            <div class="meta">Harga: <%= rupiah(p.harga_pasar) %></div>
-            <div class="meta">Luas Tanah: <%= p.luas_tanah %> m²</div>
+            <h3><%= properti.alamat %></h3>
+            <div class="meta">Harga: <%= rupiah(properti.harga_pasar) %></div>
+            <div class="meta">Luas Tanah: <%= properti.luas_tanah %> m²</div>
             <br>
-            <%= link_to "View Details", listing_path(p), class: "btn" %>
+            <%= link_to "View Details", listing_path(properti), class: "btn" %>
           </div>
         </article>
       <% end %>
     </div>
   </section>
-
 </main>
-
-<!-- FOOTER -->
-<footer>
-  <div class="container footer-inner">
-    <div>© 2025 SPK Properti</div>
-    <div>
-      <%= link_to "Privacy", privacy_path %> ·
-      <%= link_to "Terms", terms_path %> ·
-      <%= link_to "FAQ", faq_path %>
-    </div>
-  </div>
-</footer>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("nav-links");
-
-    if (hamburger && navLinks) {
-      // toggle menu
-      hamburger.addEventListener("click", function () {
-        navLinks.classList.toggle("open");
-      });
-
-      // klik luar = tutup menu
-      document.addEventListener("click", function (e) {
-        if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
-          navLinks.classList.remove("open");
-        }
-      });
-    }
-  });
-</script>
-
-</body>
-</html>

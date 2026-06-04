@@ -30,14 +30,28 @@ class Propertis
   has_many :analisis_hargas, class_name: "AnalisisHarga", inverse_of: :propertis, dependent: :destroy
   has_and_belongs_to_many :fasilitas, class_name: "Fasilitas", inverse_of: :propertis
 
+  STATUS_KEPEMILIKAN = ["SHM", "HGB", "AJB", "Girik", "Lainnya"].freeze
+
+  scope :recent_first, -> { order_by(created_at: :desc) }
+  scope :matching_query, lambda { |query|
+    return all if query.blank?
+
+    keyword = /#{Regexp.escape(query)}/i
+    any_of({ alamat: keyword }, { daerah: keyword }, { kecamatan: keyword }, { kelurahan: keyword })
+  }
+  scope :within_price, lambda { |price|
+    return all if price.blank?
+
+    where(:harga_pasar.lte => price.to_i)
+  }
+
   validates :alamat, :daerah, :kecamatan, :kelurahan, :latitude, :longitude,
             :luas_tanah, :luas_bangunan, :tahun_pembangunan, :status_kepemilikan,
             presence: true
+  validates :status_kepemilikan, inclusion: { in: STATUS_KEPEMILIKAN }
   validate :njop_or_area_baseline_present
   validate :minimal_5_images
   validate :harga_dimensions_positive
-
-  STATUS_KEPEMILIKAN = ["SHM", "HGB", "AJB", "Girik", "Lainnya"].freeze
 
   def minimal_5_images
     errors.add(:images, "minimal 5 gambar") if images.size < 5

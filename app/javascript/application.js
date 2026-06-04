@@ -1,61 +1,38 @@
-// app/javascript/application.js (ES5 compatible)
 (function () {
   var doc = document.documentElement;
-
-  /* ===============================
-     THEME (LIGHT / DARK)
-     =============================== */
+  var escapeMap = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  };
 
   var prefersDark = window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches;
+    window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   var savedTheme = null;
   try {
-    savedTheme = localStorage.getItem('theme');
+    savedTheme = localStorage.getItem("theme");
   } catch (e) {}
 
-  var theme = savedTheme || (prefersDark ? 'dark' : 'light');
-  doc.setAttribute('data-theme', theme);
+  var theme = savedTheme || (prefersDark ? "dark" : "light");
+  doc.setAttribute("data-theme", theme);
 
-  window.toggleTheme = function () {
-    var current = doc.getAttribute('data-theme') || 'light';
-    var next = current === 'light' ? 'dark' : 'light';
-    doc.setAttribute('data-theme', next);
+  function applyTheme(nextTheme) {
+    doc.setAttribute("data-theme", nextTheme);
+    syncThemeToggle(nextTheme);
     try {
-      localStorage.setItem('theme', next);
+      localStorage.setItem("theme", nextTheme);
     } catch (e) {}
-  };
+  }
 
-  /* ===============================
-     HAMBURGER MENU
-     =============================== */
+  function syncThemeToggle(nextTheme) {
+    var toggle = document.querySelector("[data-theme-toggle]");
+    if (!toggle) return;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    var nav = document.getElementById('navLinks');
-    var hamburger = document.getElementById('hamburger');
-
-    if (!nav || !hamburger) return;
-
-    hamburger.addEventListener('click', function () {
-      nav.classList.toggle('open');
-    });
-
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        nav.classList.remove('open');
-      }
-    });
-
-    document.addEventListener('click', function (e) {
-      if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
-        nav.classList.remove('open');
-      }
-    });
-  });
-
-  /* ===============================
-     UTILITIES (OPTIONAL)
-     =============================== */
+    toggle.setAttribute("aria-pressed", nextTheme === "dark" ? "true" : "false");
+  }
 
   window.$qs = function (s, el) {
     return (el || document).querySelector(s);
@@ -81,65 +58,153 @@
     }
   };
 
-})();
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const slider = document.querySelector(".hero-slider");
-  if (!slider) return;
-
-  const slides = slider.querySelectorAll(".slide");
-  const prev = slider.querySelector(".prev");
-  const next = slider.querySelector(".next");
-
-  let index = 0;
-  let timer;
-
-  /* DOTS */
-  const dotsWrap = document.createElement("div");
-  dotsWrap.className = "dots";
-  slider.appendChild(dotsWrap);
-
-  slides.forEach((_, i) => {
-    const dot = document.createElement("button");
-    if (i === 0) dot.classList.add("active");
-    dot.addEventListener("click", () => goTo(i));
-    dotsWrap.appendChild(dot);
-  });
-
-  const dots = dotsWrap.querySelectorAll("button");
-
-  function show(i) {
-    slides.forEach(s => s.classList.remove("is-active"));
-    dots.forEach(d => d.classList.remove("active"));
-
-    slides[i].classList.add("is-active");
-    dots[i].classList.add("active");
+  function escapeHtml(value) {
+    return String(value || "").replace(/[&<>"']/g, function (char) {
+      return escapeMap[char];
+    });
   }
 
-  function goTo(i) {
-    index = i;
-    show(index);
+  function initNavigation() {
+    var nav = document.getElementById("nav-links");
+    var hamburger = document.getElementById("hamburger");
+
+    if (!nav || !hamburger) return;
+
+    hamburger.addEventListener("click", function () {
+      var isOpen = nav.classList.toggle("open");
+      hamburger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        nav.classList.remove("open");
+        hamburger.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+        nav.classList.remove("open");
+        hamburger.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  function initThemeToggle() {
+    var toggle = document.querySelector("[data-theme-toggle]");
+    if (!toggle) return;
+
+    syncThemeToggle(doc.getAttribute("data-theme") || "light");
+    toggle.addEventListener("click", function () {
+      var current = doc.getAttribute("data-theme") || "light";
+      applyTheme(current === "light" ? "dark" : "light");
+    });
+  }
+
+  function initSlider() {
+    var slider = document.querySelector(".hero-slider");
+    if (!slider) return;
+
+    var slides = slider.querySelectorAll(".slide");
+    var prev = slider.querySelector(".prev");
+    var next = slider.querySelector(".next");
+    if (!slides.length || !prev || !next) return;
+
+    var index = 0;
+    var timer;
+    var dotsWrap = document.createElement("div");
+    dotsWrap.className = "dots";
+    slider.appendChild(dotsWrap);
+
+    Array.prototype.forEach.call(slides, function (_, i) {
+      var dot = document.createElement("button");
+      if (i === 0) dot.classList.add("active");
+      dot.addEventListener("click", function () {
+        goTo(i);
+      });
+      dotsWrap.appendChild(dot);
+    });
+
+    var dots = dotsWrap.querySelectorAll("button");
+
+    function show(i) {
+      Array.prototype.forEach.call(slides, function (slide) {
+        slide.classList.remove("is-active");
+      });
+      Array.prototype.forEach.call(dots, function (dot) {
+        dot.classList.remove("active");
+      });
+
+      slides[i].classList.add("is-active");
+      dots[i].classList.add("active");
+    }
+
+    function goTo(i) {
+      index = i;
+      show(index);
+      resetTimer();
+    }
+
+    function nextSlide() {
+      index = (index + 1) % slides.length;
+      show(index);
+    }
+
+    function prevSlide() {
+      index = (index - 1 + slides.length) % slides.length;
+      show(index);
+    }
+
+    function resetTimer() {
+      clearInterval(timer);
+      timer = setInterval(nextSlide, 6000);
+    }
+
+    prev.addEventListener("click", prevSlide);
+    next.addEventListener("click", nextSlide);
     resetTimer();
   }
 
-  function nextSlide() {
-    index = (index + 1) % slides.length;
-    show(index);
+  function initMap() {
+    var mapElement = document.getElementById("listing-detail-map");
+    if (!mapElement || !window.L) return;
+
+    var latitude = Number(mapElement.dataset.latitude);
+    var longitude = Number(mapElement.dataset.longitude);
+    if (Number.isNaN(latitude) || Number.isNaN(longitude)) return;
+
+    var map = L.map(mapElement, { scrollWheelZoom: false }).setView([latitude, longitude], 15);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    var popupHtml =
+      '<div class="map-popup">' +
+      "<strong>" + escapeHtml(mapElement.dataset.title) + "</strong>" +
+      "<p>" + escapeHtml(mapElement.dataset.address) + "</p>" +
+      "<p>" + escapeHtml(mapElement.dataset.price) + " · " + escapeHtml(mapElement.dataset.landArea) + " m²</p>" +
+      "</div>";
+
+    L.marker([latitude, longitude]).addTo(map).bindPopup(popupHtml).openPopup();
   }
 
-  function prevSlide() {
-    index = (index - 1 + slides.length) % slides.length;
-    show(index);
+  function initStaticContactForm() {
+    var form = document.querySelector("[data-static-contact-form]");
+    if (!form) return;
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      window.alert("Form ini masih placeholder. Sambungkan ke handler backend jika ingin dipakai.");
+    });
   }
 
-  function resetTimer() {
-    clearInterval(timer);
-    timer = setInterval(nextSlide, 6000);
-  }
-
-  prev.addEventListener("click", prevSlide);
-  next.addEventListener("click", nextSlide);
-
-  resetTimer();
-});
+  document.addEventListener("DOMContentLoaded", function () {
+    initThemeToggle();
+    initNavigation();
+    initSlider();
+    initMap();
+    initStaticContactForm();
+  });
+})();

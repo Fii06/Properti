@@ -1,0 +1,41 @@
+<header class="site-header">
+  <div class="container navbar">
+    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
+      SPK<span>Properti</span>
+    <% end %>
+
+    <nav class="nav-links" id="nav-links" aria-label="Primary">
+      <%= link_to "Home", root_path, class: active_nav_class("home") %>
+      <%= link_to "Listings", listings_path, class: active_nav_class("listings") %>
+      <%= link_to "Agents", agents_path, class: active_nav_class("agents") %>
+      <%= link_to "Neighborhoods", neighborhoods_path, class: active_nav_class("neighborhoods") %>
+      <%= link_to "Services", services_path, class: active_nav_class("services") %>
+      <%= link_to "Blog", blog_path, class: active_nav_class("blog") %>
+      <%= link_to "About", about_path, class: active_nav_class("about") %>
+      <%= link_to "Contact", contact_path, class: active_nav_class("contact") %>
+    </nav>
+
+    <div class="controls">
+      <button
+        id="themeToggle"
+        class="btn ghost"
+        type="button"
+        data-theme-toggle="true"
+        aria-pressed="false"
+        aria-label="Toggle dark mode"
+      >
+        🌓
+      </button>
+      <button
+        id="hamburger"
+        class="hamburger"
+        type="button"
+        aria-label="Menu"
+        aria-controls="nav-links"
+        aria-expanded="false"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>

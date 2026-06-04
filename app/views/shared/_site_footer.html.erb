@@ -2,7 +2,9 @@
   <div class="container footer-inner">
     <div>© <%= Time.current.year %> SPK Properti</div>
     <div>
-      <a href="#">Privacy</a> · <a href="#">Terms</a>
+      <%= link_to "Privacy", privacy_path %> ·
+      <%= link_to "Terms", terms_path %> ·
+      <%= link_to "FAQ", faq_path %>
     </div>
   </div>
 </footer>

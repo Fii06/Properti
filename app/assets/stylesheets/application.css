@@ -50,6 +50,10 @@ body {
   line-height: 1.6;
 }
 
+#content {
+  min-height: calc(100vh - 160px);
+}
+
 /* ================================
    LINKS & CONTAINER
    ================================ */
@@ -422,6 +426,33 @@ select {
   padding: 2rem 1rem;
 }
 
+.flash-stack {
+  width: min(1200px, 92vw);
+  margin: 1rem auto 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.flash {
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  background: var(--card);
+}
+
+.flash.notice {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.flash.alert {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
 @media (max-width: 700px) {
   .listing-map-copy {
     flex-direction: column;
@@ -464,6 +495,114 @@ select {
   padding-left: 1.25rem;
 }
 
+.facility-card {
+  padding: 1.25rem;
+}
+
+.facility-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.35rem;
+}
+
+.facility-meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.facility-description {
+  margin: 0.85rem 0 0;
+}
+
+.neighborhood-shell {
+  padding-bottom: 3rem;
+}
+
+.neighborhood-hero {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+.neighborhood-intro,
+.neighborhood-summary,
+.category-filter,
+.facility-card,
+.empty-state-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+}
+
+.neighborhood-intro,
+.neighborhood-summary,
+.category-filter,
+.empty-state-panel {
+  padding: 1.5rem;
+}
+
+.neighborhood-intro {
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.14), transparent 40%),
+    linear-gradient(135deg, var(--card), color-mix(in srgb, var(--surface) 85%, white));
+}
+
+.section-stack {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.summary-number {
+  font-size: 2.2rem;
+  line-height: 1;
+  font-weight: 800;
+  margin: 0.35rem 0;
+}
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text);
+  background: var(--surface);
+  font-weight: 600;
+}
+
+.filter-pill:hover,
+.filter-pill.is-active {
+  background: var(--primary);
+  color: #fff;
+  text-decoration: none;
+  border-color: var(--primary);
+}
+
+.category-section {
+  display: grid;
+  gap: 1rem;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.category-header h2 {
+  margin: 0;
+}
+
 /* ================================
    TABLE
    ================================ */
@@ -499,6 +638,12 @@ footer {
 @media (max-width: 700px) {
   .footer-inner {
     flex-direction: column;
+  }
+}
+
+@media (max-width: 900px) {
+  .neighborhood-hero {
+    grid-template-columns: 1fr;
   }
 }
 

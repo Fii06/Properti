@@ -1,104 +1,43 @@
+<% content_for :title, "Blog" %>
+<% content_for :active_nav, "blog" %>
 
-<!-- HEADER -->
-<header class="site-header">
-  <div class="container navbar">
+<main id="content" class="container">
+  <section class="hero">
+    <span class="badge">Insights</span>
+    <h1>Berita Properti</h1>
+    <p>Berita terbaru seputar properti dari Kompas Properti</p>
+  </section>
 
-    <%= link_to root_path, class: "logo", aria: { label: "SPK Properti Home" } do %>
-      SPK<span>Properti</span>
-    <% end %>
+  <section class="section">
+    <% if @news.any? %>
+      <div class="grid cols-3">
+        <% @news.each do |news| %>
+          <article class="card">
+            <% if news.image.present? %>
+              <img src="<%= news.image %>" alt="<%= news.title %>" loading="lazy">
+            <% end %>
 
-    <nav class="nav-links" id="nav-links" aria-label="Primary">
-      <%= link_to "Home", root_path %>
-      <%= link_to "Listings", listings_path %>
-      <%= link_to "Agents", agents_path %>
-      <%= link_to "Neighborhoods", neighborhoods_path %>      
-      <%= link_to "Services", services_path %>
-      <%= link_to "Blog", blog_path, class: "active" %>
-      <%= link_to "About", about_path %>
-      <%= link_to "Contact", contact_path %>  
-    </nav>
+            <div class="card-content">
+              <h3 class="card-title">
+                <%= link_to news.title, news.url, target: "_blank", rel: "noopener" %>
+              </h3>
 
-    <div class="controls">
-      <button
-        id="themeToggle"
-        class="btn ghost"
-        onclick="toggleTheme()"
-        aria-pressed="false"
-        aria-label="Toggle dark mode"
-      >
-        🌓
-      </button>
-      <button
-        id="hamburger"
-        class="hamburger"
-        aria-label="Menu"
-        aria-controls="nav-links"
-        aria-expanded="false"
-      >
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </div>
-</header>
+              <div class="meta">
+                <%= news.source %> •
+                <%= news.posted_at.present? ? news.posted_at : news.created_at.strftime("%d %B %Y") %>
+              </div>
 
-<section class="hero">
-  <p class="badge">Insights</p>
-  <h1>Berita Properti</h1>
-  <p>Berita terbaru seputar properti dari Kompas Properti</p>
-</section>
-
-<section class="section">
-  <div class="grid cols-3">
-    <% @news.each do |n| %>
-      <article class="card"
-         onclick="window.open('<%= n.url %>', '_blank')"
-         style="cursor: pointer;">
-
-        <% if n.image.present? %>
-          <img src="<%= n.image %>" alt="<%= n.title %>" loading="lazy">
+              <p><%= truncate(news.excerpt, length: 120) %></p>
+              <%= link_to "Baca artikel", news.url, class: "btn ghost", target: "_blank", rel: "noopener" %>
+            </div>
+          </article>
         <% end %>
-
-        <div class="card-content">
-          <h3 class="card-title"><%= n.title %></h3>
-
-          <div class="meta">
-            <%= n.source %> •
-            <%= n.posted_at.present? ? n.posted_at : n.created_at.strftime("%d %B %Y") %>
-          </div>
-
-          <p>
-            <%= truncate(n.excerpt, length: 120) %>
-          </p>
-        </div>
-      </article>
+      </div>
+    <% else %>
+      <div class="empty-state-panel empty-state">
+        <h2>Belum ada berita properti untuk ditampilkan</h2>
+        <p>Konten dari Kompas Properti akan muncul di sini setelah tersedia. Sementara itu, Anda bisa melihat daftar properti yang sedang aktif.</p>
+      </div>
     <% end %>
-  </div>
-</section>
-
-<footer class="site-footer">
-  <div class="container">
-    <p>© <%= Time.current.year %> SPK Properti. All rights reserved.</p>
-  </div>
-</footer>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const hamburger = document.getElementById("hamburger");
-    const navLinks = document.getElementById("nav-links");
-
-    if (hamburger && navLinks) {
-      // toggle menu
-      hamburger.addEventListener("click", function () {
-        navLinks.classList.toggle("open");
-      });
-
-      // klik luar = tutup menu
-      document.addEventListener("click", function (e) {
-        if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
-          navLinks.classList.remove("open");
-        }
-      });
-    }
-  });
-</script>
-
+  </section>
+</main>

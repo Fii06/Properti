@@ -2,25 +2,30 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
-  <title>SPK Properti</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= page_title(content_for?(:title) ? content_for(:title) : nil) %></title>
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
   <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
+  <%= yield :head %>
 </head>
 
-<body>
-
-<header class="site-header">
-</header>
-
-<main id="content" class="container">
-  <%= yield %>
-</main>
-
-<footer>
-</footer>
-
+<body class="<%= content_for?(:body_class) ? content_for(:body_class) : nil %>">
+<%= render "shared/site_navbar" %>
+<% if notice.present? || alert.present? %>
+  <div class="flash-stack">
+    <% if notice.present? %>
+      <div class="flash notice"><%= notice %></div>
+    <% end %>
+    <% if alert.present? %>
+      <div class="flash alert"><%= alert %></div>
+    <% end %>
+  </div>
+<% end %>
+<%= yield %>
+<%= render "shared/site_footer" %>
+<%= yield :page_scripts %>
 </body>
 </html>
