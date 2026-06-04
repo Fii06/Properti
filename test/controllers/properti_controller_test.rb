@@ -76,6 +76,28 @@ class PropertisControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "data:image/jpeg;base64,"
   end
 
+  test "show renders map on detail page when coordinates are available" do
+    properti = create_property_record(latitude: -6.9901, longitude: 107.6295)
+
+    get listing_path(properti)
+
+    assert_response :success
+    assert_includes response.body, "Lokasi Properti"
+    assert_includes response.body, 'id="listing-detail-map"'
+    assert_includes response.body, 'data-latitude="-6.9901"'
+    assert_includes response.body, 'data-longitude="107.6295"'
+  end
+
+  test "show renders fallback when coordinates are missing" do
+    properti = create_property_record(latitude: nil, longitude: nil, validate: false)
+
+    get listing_path(properti)
+
+    assert_response :success
+    assert_includes response.body, "Lokasi belum tersedia"
+    refute_includes response.body, 'id="listing-detail-map"'
+  end
+
   private
 
   def valid_property_params(images:)
@@ -112,5 +134,29 @@ class PropertisControllerTest < ActionDispatch::IntegrationTest
 
   def encoded_images(count: 5)
     Array.new(count) { |index| Base64.strict_encode64("fake-image-#{index}") }
+  end
+
+  def create_property_record(latitude:, longitude:, validate: true)
+    attributes = {
+      alamat: "Jl. Raya Bojongsoang No. 10",
+      daerah: "Bojongsoang",
+      kecamatan: "Bojongsoang",
+      kelurahan: "Bojongsoang",
+      latitude: latitude,
+      longitude: longitude,
+      luas_tanah: 120,
+      luas_bangunan: 90,
+      tahun_pembangunan: 2018,
+      status_kepemilikan: "SHM",
+      njop: 2_500_000,
+      harga_pasar: 910_000_000,
+      harga_rekomendasi_min: 860_000_000,
+      harga_rekomendasi_mid: 910_000_000,
+      harga_rekomendasi_max: 960_000_000,
+      images: Array.new(5) { "data:image/jpeg;base64,ZmFrZQ==" }
+    }
+
+    properti = Propertis.new(attributes)
+    validate ? properti.tap(&:save!) : properti.tap { |record| record.save!(validate: false) }
   end
 end

@@ -10,7 +10,7 @@ class PagesController < ApplicationController
   end
 
   def listings
-    @propertis = Propertis.all
+    @propertis = Propertis.order_by(created_at: :desc)
 
     if params[:q].present?
       keyword = /#{Regexp.escape(params[:q])}/i

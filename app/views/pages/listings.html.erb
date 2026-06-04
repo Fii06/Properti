@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Listings · SPK Properti</title>
   <%= stylesheet_link_tag "application", media: "all" %>
 </head>
@@ -85,6 +86,7 @@
       </div>
 
       <div style="margin-top:1rem">
+        <button type="submit" class="btn">Apply Filters</button>
         <%= link_to "Reset", listings_path, class: "btn ghost" %>
       </div>
     </form>
@@ -92,22 +94,34 @@
 
   <!-- LISTINGS GRID -->
   <section class="section">
-    <div class="grid cols-3">
-      <% @propertis.each do |p| %>
-        <article class="card">
-          <% if (image_src = property_image_src(p.images.first)).present? %>
-            <%= image_tag image_src, alt: p.alamat, loading: "lazy" %>
-          <% end %>
-          <div class="card-content">
-            <h3><%= p.alamat %></h3>
-            <div class="meta">Harga: <%= rupiah(p.harga_pasar) %></div>
-            <div class="meta">Luas Tanah: <%= p.luas_tanah %> m²</div>
-            <br>
-            <%= link_to "View Details", listing_path(p), class: "btn" %>
-          </div>
-        </article>
-      <% end %>
-    </div>
+    <% if @propertis.any? %>
+      <div class="grid cols-3">
+        <% @propertis.each do |p| %>
+          <article class="card">
+            <% if (image_src = property_image_src(p.images.first)).present? %>
+              <%= image_tag image_src, alt: p.alamat, loading: "lazy" %>
+            <% end %>
+            <div class="card-content">
+              <h3><%= p.alamat %></h3>
+              <div class="meta">Harga: <%= rupiah(p.harga_pasar) %></div>
+              <div class="meta">Luas Tanah: <%= p.luas_tanah %> m²</div>
+              <% if p.latitude.present? && p.longitude.present? %>
+                <div class="meta">Koordinat: <%= p.latitude %>, <%= p.longitude %></div>
+              <% else %>
+                <div class="meta meta-warning">Koordinat belum tersedia</div>
+              <% end %>
+              <br>
+              <%= link_to "View Details", listing_path(p), class: "btn" %>
+            </div>
+          </article>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="card card-content empty-state">
+        <h2>Belum ada listing yang cocok</h2>
+        <p>Coba ubah kata kunci atau batas harga untuk melihat properti lain.</p>
+      </div>
+    <% end %>
   </section>
 
 </main>
@@ -123,19 +137,16 @@
     </div>
   </div>
 </footer>
-
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.getElementById("nav-links");
 
     if (hamburger && navLinks) {
-      // toggle menu
       hamburger.addEventListener("click", function () {
         navLinks.classList.toggle("open");
       });
 
-      // klik luar = tutup menu
       document.addEventListener("click", function (e) {
         if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
           navLinks.classList.remove("open");

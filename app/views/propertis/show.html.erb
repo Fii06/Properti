@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SPK Properti</title>
   <%= stylesheet_link_tag "application", media: "all" %>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  >
 </head>
 
 <body>
@@ -86,6 +92,40 @@
   </div>
 </section>
 
+<section class="container section">
+  <% if @properti.latitude.present? && @properti.longitude.present? %>
+    <div class="card listing-map-shell">
+      <div class="card-content">
+        <div class="listing-map-copy">
+          <div>
+            <span class="badge">Leaflet + OpenStreetMap</span>
+            <h2>Lokasi Properti</h2>
+            <p>Peta ini menampilkan posisi listing berdasarkan koordinat yang tersimpan.</p>
+          </div>
+          <div class="listing-map-stats">
+            <span><%= @properti.latitude %>, <%= @properti.longitude %></span>
+          </div>
+        </div>
+      </div>
+      <div
+        id="listing-detail-map"
+        class="listing-map"
+        data-title="<%= @properti.alamat %>"
+        data-address="<%= [@properti.daerah, @properti.kecamatan, @properti.kelurahan].compact_blank.join(", ") %>"
+        data-price="<%= rupiah(@properti.harga_pasar) %>"
+        data-land-area="<%= @properti.luas_tanah %>"
+        data-latitude="<%= @properti.latitude %>"
+        data-longitude="<%= @properti.longitude %>"
+      ></div>
+    </div>
+  <% else %>
+    <div class="card card-content empty-state">
+      <h2>Lokasi belum tersedia</h2>
+      <p>Listing ini belum memiliki koordinat, jadi peta belum bisa ditampilkan.</p>
+    </div>
+  <% end %>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="container footer-inner">
@@ -98,23 +138,61 @@
   </div>
 </footer>
 
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""
+></script>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const hamburger = document.getElementById("hamburger");
     const navLinks = document.getElementById("nav-links");
+    const mapElement = document.getElementById("listing-detail-map");
 
     if (hamburger && navLinks) {
-      // toggle menu
       hamburger.addEventListener("click", function () {
         navLinks.classList.toggle("open");
       });
 
-      // klik luar = tutup menu
       document.addEventListener("click", function (e) {
         if (!navLinks.contains(e.target) && !hamburger.contains(e.target)) {
           navLinks.classList.remove("open");
         }
       });
+    }
+
+    if (mapElement && window.L) {
+      const latitude = Number(mapElement.dataset.latitude);
+      const longitude = Number(mapElement.dataset.longitude);
+
+      const map = L.map(mapElement, { scrollWheelZoom: false }).setView([latitude, longitude], 15);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      const escapeHtml = function (value) {
+        return String(value || "").replace(/[&<>"']/g, function (char) {
+          return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          }[char];
+        });
+      };
+
+      const popupHtml = `
+        <div class="map-popup">
+          <strong>${escapeHtml(mapElement.dataset.title)}</strong>
+          <p>${escapeHtml(mapElement.dataset.address)}</p>
+          <p>${escapeHtml(mapElement.dataset.price)} · ${escapeHtml(mapElement.dataset.landArea)} m²</p>
+        </div>
+      `;
+
+      L.marker([latitude, longitude]).addTo(map).bindPopup(popupHtml).openPopup();
     }
   });
 </script>

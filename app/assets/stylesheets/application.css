@@ -363,6 +363,76 @@ select {
   font-size: 0.9rem;
 }
 
+.meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.meta-warning {
+  color: #b45309;
+}
+
+.listing-map-shell {
+  overflow: hidden;
+}
+
+.listing-map-copy {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.listing-map-copy h2 {
+  margin: 0.75rem 0 0.25rem;
+}
+
+.listing-map-copy p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.listing-map-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.listing-map-stats span {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.4rem 0.75rem;
+}
+
+.listing-map {
+  height: 420px;
+  width: 100%;
+  border-top: 1px solid var(--border);
+}
+
+.map-popup p {
+  margin: 0.35rem 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+@media (max-width: 700px) {
+  .listing-map-copy {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .listing-map {
+    height: 320px;
+  }
+}
+
 .meta-stack {
   display: grid;
   gap: 0.5rem;
