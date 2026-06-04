@@ -113,13 +113,9 @@ PROPERTY_SEEDS = [
   }
 ].freeze
 
-SEED_IMAGE_PATHS = [
-  "/Users/amongbagas/Desktop/images/1.jpg",
-  "/Users/amongbagas/Desktop/images/2.jpg",
-  "/Users/amongbagas/Desktop/images/3.jpg",
-  "/Users/amongbagas/Desktop/images/4.jpg",
-  "/Users/amongbagas/Desktop/images/5.jpg"
-].freeze
+SEED_IMAGE_PATHS = Dir.glob(Rails.root.join("db/images/*.{jpg,jpeg,png,webp}"))
+  .sort
+  .freeze
 
 def seed_images
   @seed_images ||= SEED_IMAGE_PATHS.map do |path|
