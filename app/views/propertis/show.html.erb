@@ -14,15 +14,143 @@
     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
     crossorigin=""
   ></script>
+  <script>
+    (function() {
+      let currentSlideIndex = 0;
+
+      window.openLightbox = function(index) {
+        const modal = document.getElementById("lightboxModal");
+        if (!modal) return;
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden"; // Prevent background scrolling
+        showSlide(index);
+      };
+
+      window.closeLightbox = function() {
+        const modal = document.getElementById("lightboxModal");
+        if (!modal) return;
+        modal.style.display = "none";
+        document.body.style.overflow = ""; // Restore scrolling
+      };
+
+      window.changeSlide = function(direction) {
+        showSlide(currentSlideIndex + direction);
+      };
+
+      function showSlide(index) {
+        const slides = document.getElementsByClassName("lightbox-slide");
+        if (!slides.length) return;
+        
+        // Wrap around logic
+        if (index >= slides.length) {
+          currentSlideIndex = 0;
+        } else if (index < 0) {
+          currentSlideIndex = slides.length - 1;
+        } else {
+          currentSlideIndex = index;
+        }
+
+        // Hide all slides
+        for (let i = 0; i < slides.length; i++) {
+          slides[i].style.display = "none";
+        }
+
+        // Show current slide
+        slides[currentSlideIndex].style.display = "flex";
+
+        // Update caption
+        const caption = document.getElementById("lightboxCaption");
+        if (caption) {
+          caption.innerText = `Gambar ${currentSlideIndex + 1} dari ${slides.length}`;
+        }
+      }
+
+      // Keyboard navigation
+      document.addEventListener("keydown", function(e) {
+        const modal = document.getElementById("lightboxModal");
+        if (modal && modal.style.display === "flex") {
+          if (e.key === "ArrowLeft") {
+            changeSlide(-1);
+          } else if (e.key === "ArrowRight") {
+            changeSlide(1);
+          } else if (e.key === "Escape") {
+            closeLightbox();
+          }
+        }
+      });
+
+      // Close when clicking background
+      document.addEventListener("DOMContentLoaded", function() {
+        const modal = document.getElementById("lightboxModal");
+        if (modal) {
+          modal.addEventListener("click", function(e) {
+            if (e.target === modal) {
+              closeLightbox();
+            }
+          });
+        }
+      });
+    })();
+  </script>
 <% end %>
 
 <main id="content">
   <section class="hero">
     <div class="container">
-      <h1 data-page="Detail"><%= @properti.alamat %></h1>
+      <span class="badge">Detail</span>
+      <h1><%= @properti.alamat %></h1>
       <p>Informasi lengkap properti</p>
     </div>
   </section>
+
+  <!-- GALLERY SECTION -->
+  <section class="container" style="margin-top: 2rem;">
+    <div class="property-gallery">
+      <div class="gallery-main">
+        <% if @properti.images[0].present? && (image_src = property_image_src(@properti.images[0])).present? %>
+          <img src="<%= image_src %>" alt="Primary Property Image" class="gallery-img" data-index="0" onclick="openLightbox(0)">
+        <% end %>
+        <button class="gallery-view-all-btn" onclick="openLightbox(0)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Tampilkan Semua Foto
+        </button>
+      </div>
+      <div class="gallery-side">
+        <% (1..4).each do |i| %>
+          <div class="gallery-side-item">
+            <% if @properti.images[i].present? && (image_src = property_image_src(@properti.images[i])).present? %>
+              <img src="<%= image_src %>" alt="Property Image <%= i + 1 %>" class="gallery-img" data-index="<%= i %>" onclick="openLightbox(<%= i %>)">
+              <% if i == 4 && @properti.images.size > 5 %>
+                <div class="gallery-overlay" onclick="openLightbox(4)">
+                  <span>+<%= @properti.images.size - 5 %> Foto</span>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIGHTBOX MODAL -->
+  <div id="lightboxModal" class="lightbox-modal">
+    <div class="lightbox-content">
+      <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+      
+      <% @properti.images.each_with_index do |image, index| %>
+        <% if (image_src = property_image_src(image)).present? %>
+          <div class="lightbox-slide">
+            <img src="<%= image_src %>" alt="Property Detail Image <%= index + 1 %>">
+          </div>
+        <% end %>
+      <% end %>
+
+      <button class="lightbox-nav lightbox-prev" onclick="changeSlide(-1)">&#10094;</button>
+      <button class="lightbox-nav lightbox-next" onclick="changeSlide(1)">&#10095;</button>
+
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
 
   <section class="container" style="margin-top:2rem">
     <div class="grid cols-2">
@@ -58,7 +186,6 @@
         <div class="card-content">
           <div class="listing-map-copy">
             <div>
-              <span class="badge">Leaflet + OpenStreetMap</span>
               <h2>Lokasi Properti</h2>
               <p>Peta ini menampilkan posisi listing berdasarkan koordinat yang tersimpan.</p>
             </div>
