@@ -11,6 +11,7 @@
   <% riwayat_rows = Array(@riwayat_hargas).map { |item| item.respond_to?(:with_indifferent_access) ? item.with_indifferent_access : item } %>
   <% riwayat_rows = [{}] if riwayat_rows.empty? %>
   <% riwayat_rows << {} while riwayat_rows.length < 3 %>
+  <% manual_njop = (@manual_njop_input || {}).with_indifferent_access %>
 
   <section class="section card card-content">
     <% if @properti&.errors&.any? %>
@@ -81,8 +82,25 @@
           <%= f.number_field :tahun_pembangunan, class: "input", required: true, value: @properti&.tahun_pembangunan %>
         </div>
         <div>
-          <%= f.label :njop, "NJOP override (Rp per m², opsional)" %>
-          <%= f.number_field :njop, class: "input", step: :any, value: @properti&.njop %>
+          <%= f.label :harga_per_m2, "Harga NJOP per m² (Rp)" %>
+          <%= f.number_field :harga_per_m2, class: "input", step: :any, required: true, value: manual_njop[:harga_per_m2] %>
+        </div>
+      </div>
+
+      <div class="section-divider">
+        <h2>Referensi NJOP Manual</h2>
+      </div>
+
+      <div class="nop-field-group">
+        <label for="propertis_kd_propinsi">NOP</label>
+        <div class="nop-inline-inputs">
+          <%= f.text_field :kd_propinsi, class: "input nop-segment nop-segment-2", required: true, maxlength: 2, value: manual_njop[:kd_propinsi], inputmode: "numeric", aria: { label: "Kode provinsi NJOP" } %>
+          <%= f.text_field :kd_dati2, class: "input nop-segment nop-segment-2", required: true, maxlength: 2, value: manual_njop[:kd_dati2], inputmode: "numeric", aria: { label: "Kode dati2 NJOP" } %>
+          <%= f.text_field :kd_kecamatan, class: "input nop-segment nop-segment-3", required: true, maxlength: 3, value: manual_njop[:kd_kecamatan], inputmode: "numeric", aria: { label: "Kode kecamatan NJOP" } %>
+          <%= f.text_field :kd_kelurahan, class: "input nop-segment nop-segment-3", required: true, maxlength: 3, value: manual_njop[:kd_kelurahan], inputmode: "numeric", aria: { label: "Kode kelurahan NJOP" } %>
+          <%= f.text_field :kd_blok, class: "input nop-segment nop-segment-3", required: true, maxlength: 3, value: manual_njop[:kd_blok], inputmode: "numeric", aria: { label: "Kode blok NJOP" } %>
+          <%= f.text_field :no_urut, class: "input nop-segment nop-segment-4", required: true, maxlength: 4, value: manual_njop[:no_urut], inputmode: "numeric", aria: { label: "Nomor urut NJOP" } %>
+          <%= f.text_field :kd_jns_op, class: "input nop-segment nop-segment-1", required: true, maxlength: 1, value: manual_njop[:kd_jns_op], inputmode: "numeric", aria: { label: "Kode jenis objek pajak" } %>
         </div>
       </div>
 
@@ -133,7 +151,10 @@
         <h2>Ringkasan Estimasi</h2>
         <p><%= @analysis_result[:explanation] %></p>
         <div class="meta-stack">
-          <div>Baseline NJOP: <strong><%= number_to_currency(@analysis_result[:baseline_njop], unit: "Rp ", precision: 0) %></strong> per m²</div>
+          <div>
+            <%= @analysis_result[:njop_source] == "manual_reference" ? "NJOP manual tersimpan" : "Baseline NJOP" %>:
+            <strong><%= number_to_currency(@analysis_result[:effective_njop], unit: "Rp ", precision: 0) %></strong> per m²
+          </div>
           <div>Nilai tanah: <strong><%= number_to_currency(@analysis_result.dig(:adjustments, :land_value), unit: "Rp ", precision: 0) %></strong></div>
           <div>Nilai bangunan: <strong><%= number_to_currency(@analysis_result.dig(:adjustments, :building_value), unit: "Rp ", precision: 0) %></strong></div>
           <div>Rata-rata riwayat harga: <strong><%= number_to_currency(@analysis_result.dig(:adjustments, :history_anchor), unit: "Rp ", precision: 0) %></strong></div>
@@ -159,7 +180,15 @@
           luas_bangunan: @properti.luas_bangunan,
           tahun_pembangunan: @properti.tahun_pembangunan,
           status_kepemilikan: @properti.status_kepemilikan,
-          njop: @properti.njop
+          njop: @properti.njop,
+          kd_propinsi: manual_njop[:kd_propinsi],
+          kd_dati2: manual_njop[:kd_dati2],
+          kd_kecamatan: manual_njop[:kd_kecamatan],
+          kd_kelurahan: manual_njop[:kd_kelurahan],
+          kd_blok: manual_njop[:kd_blok],
+          no_urut: manual_njop[:no_urut],
+          kd_jns_op: manual_njop[:kd_jns_op],
+          harga_per_m2: manual_njop[:harga_per_m2]
         } %>
 
         <% property_hidden_fields.each do |key, value| %>

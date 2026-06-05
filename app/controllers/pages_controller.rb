@@ -64,6 +64,7 @@ class PagesController < ApplicationController
   def prepare_services_form
     @properti ||= Propertis.new
     @riwayat_hargas ||= [{}]
+    @manual_njop_input ||= {}
     @rekomendasi ||= nil
     @analysis_result ||= nil
     @encoded_images ||= []

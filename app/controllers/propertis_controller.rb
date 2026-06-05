@@ -1,9 +1,20 @@
 require "fileutils"
 
 class PropertisController < ApplicationController
+  NJOP_SEGMENT_LABELS = {
+    kd_propinsi: "Kode provinsi NJOP",
+    kd_dati2: "Kode dati2 NJOP",
+    kd_kecamatan: "Kode kecamatan NJOP",
+    kd_kelurahan: "Kode kelurahan NJOP",
+    kd_blok: "Kode blok NJOP",
+    no_urut: "Nomor urut NJOP",
+    kd_jns_op: "Kode jenis objek pajak"
+  }.freeze
+
   def preview
     @properti = Propertis.new(property_attributes)
     @riwayat_hargas = normalized_history_params
+    @manual_njop_input = normalized_manual_njop_params
     @preview_token = SecureRandom.uuid
     @encoded_images = normalized_images
 
@@ -11,6 +22,8 @@ class PropertisController < ApplicationController
     persist_preview_images!
 
     if validate_service_form
+      persist_manual_njop_reference!
+      @properti.njop = @manual_njop_input[:harga_per_m2]
       @analysis_result = PriceEstimatorService.new(@properti, riwayat_hargas: @riwayat_hargas).estimate
       apply_recommendation_to_properti(@analysis_result)
       @rekomendasi = {
@@ -29,21 +42,23 @@ class PropertisController < ApplicationController
   def create
     @properti = Propertis.new(property_attributes)
     @riwayat_hargas = normalized_history_params
+    @manual_njop_input = normalized_manual_njop_params
     @preview_token = params[:preview_token].presence
     @encoded_images = preview_images_from_token.presence || normalized_images
     @properti.images = @encoded_images
 
-    @analysis_result = PriceEstimatorService.new(@properti, riwayat_hargas: @riwayat_hargas).estimate
-    apply_recommendation_to_properti(@analysis_result)
-    @rekomendasi = {
-      min: @analysis_result[:min],
-      mid: @analysis_result[:mid],
-      max: @analysis_result[:max]
-    }
-
     chosen_price = params[:harga_final].to_i
 
     if validate_service_form && chosen_price.positive?
+      persist_manual_njop_reference!
+      @properti.njop = @manual_njop_input[:harga_per_m2]
+      @analysis_result = PriceEstimatorService.new(@properti, riwayat_hargas: @riwayat_hargas).estimate
+      apply_recommendation_to_properti(@analysis_result)
+      @rekomendasi = {
+        min: @analysis_result[:min],
+        mid: @analysis_result[:mid],
+        max: @analysis_result[:max]
+      }
       @properti.harga_pasar = chosen_price
 
       if @properti.save
@@ -55,6 +70,7 @@ class PropertisController < ApplicationController
         render "pages/services", status: :unprocessable_entity
       end
     else
+      build_analysis_preview if @properti.errors.empty?
       @properti.errors.add(:harga_pasar, "pilih salah satu harga rekomendasi") unless chosen_price.positive?
       render "pages/services", status: :unprocessable_entity
     end
@@ -81,13 +97,32 @@ class PropertisController < ApplicationController
       :tahun_pembangunan,
       :status_kepemilikan,
       :njop,
+      :kd_propinsi,
+      :kd_dati2,
+      :kd_kecamatan,
+      :kd_kelurahan,
+      :kd_blok,
+      :no_urut,
+      :kd_jns_op,
+      :harga_per_m2,
       images: [],
       riwayat_hargas: [:tanggal, :harga]
     )
   end
 
   def property_attributes
-    property_params.to_h.except("images", "riwayat_hargas")
+    property_params.to_h.except(
+      "images",
+      "riwayat_hargas",
+      "kd_propinsi",
+      "kd_dati2",
+      "kd_kecamatan",
+      "kd_kelurahan",
+      "kd_blok",
+      "no_urut",
+      "kd_jns_op",
+      "harga_per_m2"
+    )
   end
 
   def normalized_images
@@ -170,7 +205,26 @@ class PropertisController < ApplicationController
   def validate_service_form
     @properti.valid?
     validate_history_params
+    validate_manual_njop_params
     @properti.errors.empty?
+  end
+
+  def normalized_manual_njop_params
+    attributes = property_params.to_h.slice(
+      "kd_propinsi",
+      "kd_dati2",
+      "kd_kecamatan",
+      "kd_kelurahan",
+      "kd_blok",
+      "no_urut",
+      "kd_jns_op",
+      "harga_per_m2"
+    ).symbolize_keys
+
+    ReferensiNjop.normalize_segments(attributes).merge(
+      harga_per_m2: attributes[:harga_per_m2].to_s.strip,
+      alamat: @properti&.alamat.to_s
+    )
   end
 
   def validate_history_params
@@ -183,6 +237,25 @@ class PropertisController < ApplicationController
       @properti.errors.add(:base, "riwayat harga ##{index + 1} harus berisi tanggal") if entry[:tanggal].blank?
       @properti.errors.add(:base, "riwayat harga ##{index + 1} harus berisi harga") if entry[:harga].blank?
       validate_history_date(entry, index)
+    end
+  end
+
+  def validate_manual_njop_params
+    ReferensiNjop::SEGMENT_LENGTHS.each do |key, length|
+      value = @manual_njop_input[key].to_s
+
+      if value.blank?
+        @properti.errors.add(:base, "#{NJOP_SEGMENT_LABELS.fetch(key)} harus diisi")
+      elsif value.length != length
+        @properti.errors.add(:base, "#{NJOP_SEGMENT_LABELS.fetch(key)} harus terdiri dari #{length} digit")
+      end
+    end
+
+    harga_per_m2 = @manual_njop_input[:harga_per_m2].to_s
+    if harga_per_m2.blank?
+      @properti.errors.add(:base, "Harga NJOP per m2 harus diisi")
+    elsif harga_per_m2.to_f <= 0
+      @properti.errors.add(:base, "Harga NJOP per m2 harus lebih besar dari 0")
     end
   end
 
@@ -199,6 +272,21 @@ class PropertisController < ApplicationController
     @properti.harga_rekomendasi_min = result[:min]
     @properti.harga_rekomendasi_mid = result[:mid]
     @properti.harga_rekomendasi_max = result[:max]
+  end
+
+  def persist_manual_njop_reference!
+    ReferensiNjop.upsert_from_input!(@manual_njop_input)
+  end
+
+  def build_analysis_preview
+    @properti.njop = @manual_njop_input[:harga_per_m2] if @manual_njop_input[:harga_per_m2].present?
+    @analysis_result = PriceEstimatorService.new(@properti, riwayat_hargas: @riwayat_hargas).estimate
+    apply_recommendation_to_properti(@analysis_result)
+    @rekomendasi = {
+      min: @analysis_result[:min],
+      mid: @analysis_result[:mid],
+      max: @analysis_result[:max]
+    }
   end
 
   def persist_history!
@@ -230,6 +318,8 @@ class PropertisController < ApplicationController
         luas_bangunan: @properti.luas_bangunan,
         tahun_pembangunan: @properti.tahun_pembangunan,
         status_kepemilikan: @properti.status_kepemilikan,
+        nomor_njop: ReferensiNjop.build_nomor_njop(@manual_njop_input),
+        harga_per_m2: @manual_njop_input[:harga_per_m2],
         riwayat_hargas: @riwayat_hargas
       }
     )

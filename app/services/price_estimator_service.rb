@@ -26,6 +26,8 @@ class PriceEstimatorService
       mid: mid.round,
       max: max.round,
       baseline_njop: baseline_njop.round,
+      effective_njop: effective_njop.round,
+      njop_source: @properti.njop.present? ? "manual_reference" : "area_baseline",
       adjustments: {
         land_value: land_value.round,
         building_value: building_value.round,
@@ -86,7 +88,11 @@ class PriceEstimatorService
 
   def explanation_text(baseline_njop, history_anchor, age_adjustment, ownership_adjustment)
     parts = []
-    parts << "Baseline NJOP area Bojongsoang dipakai sebesar Rp #{baseline_njop.round.to_fs(:delimited)} per m2." if baseline_njop.positive?
+    if @properti.njop.present?
+      parts << "NJOP manual sebesar Rp #{@properti.njop.to_f.round.to_fs(:delimited)} per m2 dipakai dari referensi input user."
+    elsif baseline_njop.positive?
+      parts << "Baseline NJOP area Bojongsoang dipakai sebesar Rp #{baseline_njop.round.to_fs(:delimited)} per m2."
+    end
     parts << "Riwayat harga memberi anchor rata-rata Rp #{history_anchor.round.to_fs(:delimited)}." if history_anchor.positive?
     parts << "Faktor usia bangunan #{age_adjustment.round(2)}x dan status kepemilikan #{ownership_adjustment.round(2)}x diterapkan ke estimasi."
     parts.join(" ")
