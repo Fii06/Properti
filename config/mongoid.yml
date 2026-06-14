@@ -286,7 +286,10 @@ development:
     # When this flag is set to true, the update and replace methods will
     # validate the paramters and raise an error if they are invalid.
     # validate_update_replace: false
-
+production:
+  clients:
+    default:
+      uri: <%= ENV['MONGODB_URI'] %>
 
 test:
   clients:
