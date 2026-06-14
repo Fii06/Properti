@@ -170,11 +170,18 @@
       <div class="card">
         <div class="card-content">
           <div class="price">Rp <%= number_with_delimiter(@properti.harga_pasar) %></div>
-          <p><strong>Range rekomendasi:</strong></p>
-          <p>Min: Rp <%= number_with_delimiter(@properti.harga_rekomendasi_min.to_i) %></p>
-          <p>Mid: Rp <%= number_with_delimiter(@properti.harga_rekomendasi_mid.to_i) %></p>
-          <p>Max: Rp <%= number_with_delimiter(@properti.harga_rekomendasi_max.to_i) %></p>
-          <%= link_to "Kembali ke Listings", listings_path, class: "btn block" %>
+          <% if @properti.contact_penjual.present? %>
+            <p>
+              <strong>Hubungi Penjual:</strong>
+              <%= @properti.contact_penjual %>
+            </p>
+            <%= link_to "Chat WhatsApp",
+                whatsapp_url(@properti.contact_penjual, @properti),
+                target: "_blank",
+                rel: "noopener noreferrer",
+                class: "btn whatsapp-btn" %>
+          <% end %>
+          <%= link_to "Kembali ke Daftar Listings", listings_path, class: "btn block" %>
         </div>
       </div>
     </div>

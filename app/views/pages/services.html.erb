@@ -51,19 +51,58 @@
         </div>
       </div>
 
-      <div class="form-row">
-        <div>
-          <%= f.label :latitude, "Latitude" %>
-          <%= f.number_field :latitude, class: "input", required: true, step: :any, value: @properti&.latitude %>
-        </div>
-        <div>
-          <%= f.label :longitude, "Longitude" %>
-          <%= f.number_field :longitude, class: "input", required: true, step: :any, value: @properti&.longitude %>
-        </div>
+    <div class="section-divider">
+      <h2>Lokasi Properti</h2>
+    </div>
+
+    <div class="map-container">
+      <div id="property-map"></div>
+
+      <%= f.hidden_field :latitude,
+          id: "property-latitude",
+          value: @properti&.latitude %>
+
+      <%= f.hidden_field :longitude,
+          id: "property-longitude",
+          value: @properti&.longitude %>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <%= f.label :contact_penjual, "Nomor Telepon yang Bisa Dihubungi" %>
+        <%= f.text_field :contact_penjual,
+            class: "input",
+            placeholder: "08xxxxxxxxxx atau +628xxxxxxxxxx" %>
       </div>
-      <p class="helper-text">
-        Gunakan koordinat desimal dari pin Google Maps atau OpenStreetMap, misalnya <strong>-6.9901</strong> dan <strong>107.6295</strong>, agar listing otomatis muncul di peta.
-      </p>
+    </div>
+
+    <p class="helper-text">
+      Cari lokasi atau klik peta untuk menentukan lokasi properti.
+    </p>
+
+    <div class="form-row">
+      <div>
+        <label>Latitude</label>
+        <input
+          type="text"
+          id="latitude-display"
+          class="input"
+          readonly
+          value="<%= @properti&.latitude %>"
+        >
+      </div>
+
+      <div>
+        <label>Longitude</label>
+        <input
+          type="text"
+          id="longitude-display"
+          class="input"
+          readonly
+          value="<%= @properti&.longitude %>"
+        >
+      </div>
+    </div>
 
       <div class="form-row">
         <div>
@@ -180,6 +219,7 @@
           luas_bangunan: @properti.luas_bangunan,
           tahun_pembangunan: @properti.tahun_pembangunan,
           status_kepemilikan: @properti.status_kepemilikan,
+          contact_penjual: @properti.contact_penjual,
           njop: @properti.njop,
           kd_propinsi: manual_njop[:kd_propinsi],
           kd_dati2: manual_njop[:kd_dati2],
@@ -224,4 +264,140 @@
       <% end %>
     </section>
   <% end %>
+
+      <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"
+    />
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+
+      const latInput = document.getElementById("property-latitude");
+      const lngInput = document.getElementById("property-longitude");
+
+      if (!latInput || !lngInput) return;
+
+      const defaultLat = parseFloat(latInput.value) || -6.973316;
+      const defaultLng = parseFloat(lngInput.value) || 107.630798;
+
+      const map = L.map("property-map").setView(
+        [defaultLat, defaultLng],
+        15
+      );
+
+      L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          attribution: "&copy; OpenStreetMap Contributors"
+        }
+      ).addTo(map);
+
+      const marker = L.marker(
+        [defaultLat, defaultLng],
+        {
+          draggable: true
+        }
+      ).addTo(map);
+
+      function updateCoordinates(lat, lng) {
+
+        latInput.value = lat;
+        lngInput.value = lng;
+
+        document.getElementById("latitude-display").value =
+          lat.toFixed(6);
+
+        document.getElementById("longitude-display").value =
+          lng.toFixed(6);
+      }
+
+      updateCoordinates(defaultLat, defaultLng);
+
+      map.on("click", function(e) {
+
+        marker.setLatLng(e.latlng);
+
+        updateCoordinates(
+          e.latlng.lat,
+          e.latlng.lng
+        );
+      });
+
+      marker.on("dragend", function() {
+
+        const pos = marker.getLatLng();
+
+        updateCoordinates(
+          pos.lat,
+          pos.lng
+        );
+      });
+
+      const geocoder = L.Control.geocoder({
+        defaultMarkGeocode: false
+      });
+
+      geocoder.on("markgeocode", function(e) {
+
+        const center = e.geocode.center;
+
+        marker.setLatLng(center);
+
+        map.setView(center, 17);
+
+        updateCoordinates(
+          center.lat,
+          center.lng
+        );
+      });
+
+      geocoder.addTo(map);
+
+      const searchInput = document.getElementById("location-search");
+
+      searchInput.addEventListener("keypress", function(event) {
+
+        if (event.key === "Enter") {
+
+          event.preventDefault();
+
+          geocoder.options.geocoder.geocode(
+            searchInput.value,
+            function(results) {
+
+              if (results.length > 0) {
+
+                const result = results[0];
+
+                marker.setLatLng(result.center);
+
+                map.setView(result.center, 17);
+
+                updateCoordinates(
+                  result.center.lat,
+                  result.center.lng
+                );
+              }
+            }
+          );
+        }
+      });
+
+      setTimeout(function() {
+        map.invalidateSize();
+      }, 300);
+
+    });
+    </script>
+
 </main>

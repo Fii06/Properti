@@ -8,6 +8,7 @@ class Propertis
   field :kelurahan, type: String
   field :latitude, type: Float
   field :longitude, type: Float
+  field :contact_penjual, type: String
 
   field :luas_tanah, type: Integer
   field :luas_bangunan, type: Integer

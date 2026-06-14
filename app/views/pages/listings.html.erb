@@ -50,6 +50,11 @@
               <h3><%= properti.alamat %></h3>
               <div class="meta">Harga: <%= rupiah(properti.harga_pasar) %></div>
               <div class="meta">Luas Tanah: <%= properti.luas_tanah %> m²</div>
+              <% if properti.contact_penjual.present? %>
+                <div class="meta">
+                  <%= properti.contact_penjual %>
+                </div>
+              <% end %>
               <% if properti.latitude.present? && properti.longitude.present? %>
                 <div class="meta">Koordinat: <%= properti.latitude %>, <%= properti.longitude %></div>
               <% else %>

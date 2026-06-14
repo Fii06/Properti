@@ -1032,3 +1032,53 @@ footer {
   }
 }
 
+.map-search-container {
+  margin-bottom: 15px;
+}
+
+.map-container {
+  margin-bottom: 20px;
+}
+
+#property-map {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  border: 1px solid #dcdcdc;
+  overflow: hidden;
+}
+
+.leaflet-container {
+  border-radius: 12px;
+}
+
+.leaflet-control-geocoder {
+  width: 320px;
+}
+
+.leaflet-control-geocoder-form input {
+  padding: 8px;
+}
+
+#latitude-display,
+#longitude-display {
+  background: #f8f9fa;
+}
+
+.whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1rem;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+}
+
+.whatsapp-btn:hover {
+  background: #1EBE5D;
+  color: white;
+}

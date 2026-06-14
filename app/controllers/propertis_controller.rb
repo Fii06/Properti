@@ -92,6 +92,7 @@ class PropertisController < ApplicationController
       :kelurahan,
       :latitude,
       :longitude,
+      :contact_penjual,
       :luas_tanah,
       :luas_bangunan,
       :tahun_pembangunan,

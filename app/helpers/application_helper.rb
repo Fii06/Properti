@@ -20,4 +20,22 @@ module ApplicationHelper
 
     "data:image/jpeg;base64,#{value}"
   end
+
+    def whatsapp_url(phone, properti)
+    return "#" if phone.blank?
+
+    number = phone.gsub(/\D/, "")
+
+    if number.start_with?("08")
+      number = "62#{number[1..]}"
+    elsif number.start_with?("8")
+      number = "62#{number}"
+    end
+
+    message = CGI.escape(
+      "Halo, saya tertarik dengan properti di #{properti.alamat}. Apakah masih tersedia?"
+    )
+
+    "https://wa.me/#{number}?text=#{message}"
+  end
 end
